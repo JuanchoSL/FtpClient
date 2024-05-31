@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="vendor/autoload.php" verbose="true" colors="true" cacheResult="false">
+    <testsuites>
+        <testsuite name="All Tests Suite">
+            <directory>./tests/</directory>
+            <exclude>./tests/Unit/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/SFtpTest.php</exclude>
+        </testsuite>
+        <testsuite name="Unit">
+            <directory>./tests/Unit/</directory>
+            <exclude>./tests/Unit/SFtpTest.php</exclude>
+        </testsuite>
+        <testsuite name="Functional">
+            <directory>./tests/Functional/</directory>
+            <exclude>./tests/Functional/SFtpTest.php</exclude>
+        </testsuite>
+    </testsuites>
+     <php>
+        <env name="FTPTEST_HOST" value="ftp.dlptest.com" force="true" />
+        <env name="FTPTEST_USERNAME" value="dlpuser" force="true" />
+        <env name="FTPTEST_PASSWORD" value="rNrKYTX9g7z3RgJRmxWuGHbeu" force="true" />
+        </php>
+</phpunit>

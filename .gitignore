@@ -1,0 +1,5 @@
+/bin/
+/vendor/
+.vscode
+/etc/
+/tests/Common/SFtpCredentials.php

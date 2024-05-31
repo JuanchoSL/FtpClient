@@ -1,0 +1,46 @@
+{
+    "name": "juanchosl/ftpclient",
+    "description": "Little methods collection in order to create connections with file servers",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/JuanchoSL/FtpClient",
+    "minimum-stability": "stable",
+    "keywords": [
+        "ftp",
+        "sftp",
+        "ftps"
+    ],
+    "authors": [
+        {
+            "name": "Juan Sánchez Lecegui",
+            "email": "JuanchoSL@hotmail.com",
+            "homepage": "https://github.com/JuanchoSL/"
+        }
+    ],
+    "suggest": {
+        "ext-ftp": "*",
+        "ext-ssh2": "*"
+    },
+    "require": {
+        "php": "^7.2 || ^8.0",
+        "juanchosl/exceptions": "^1.0"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "1.10.*",
+        "phpunit/phpunit": "9.6.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "JuanchoSL\\FtpClient\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JuanchoSL\\FtpClient\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "tests": "vendor/bin/phpunit --configuration phpunit.xml tests",
+        "phpstan": "vendor/bin/phpstan analyse -c phpstan.neon"
+    }
+}
