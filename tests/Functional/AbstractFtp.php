@@ -23,7 +23,7 @@ abstract class AbstractFtp extends TestCase
     abstract protected function getPass();
     public function setUp(): void
     {
-        $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']);
+        $this->my_file_path = realpath(implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']));
         $this->my_dir = "juancho-test-" . date('Y-m-d');
         if (empty($this->adapter)) {
             if (empty($this->ftp)) {
