@@ -1,5 +1,6 @@
 /bin/
 /vendor/
 .vscode
-/etc/
+/etc/home-ssh-server
+/etc/home-ssh-server.pub
 /tests/Common/SFtpCredentials.php
