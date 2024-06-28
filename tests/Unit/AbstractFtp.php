@@ -12,7 +12,6 @@ abstract class AbstractFtp extends TestCase
     protected $my_file_path = "";
     protected $my_file_name = 'test.txt';
 
-    //abstract protected function connect();
     abstract protected function getInstance();
     abstract protected function getHost();
     abstract protected function getPort();
@@ -21,9 +20,9 @@ abstract class AbstractFtp extends TestCase
 
     public function setUp(): void
     {
-        $this->my_file_path = realpath(implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']));
+        $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']);
         $this->my_dir = "juancho-test-" . date('Y-m-d');
-        //$this->connect();
+
         $this->ftp = $this->getInstance();
         $connect = $this->ftp->connect($this->getHost(), $this->getPort());
         $login = $this->ftp->login($this->getUser(), $this->getPass());
@@ -76,7 +75,7 @@ abstract class AbstractFtp extends TestCase
         $this->assertNotFalse($content);
         $this->assertEquals(file_get_contents($this->my_file_path . DIRECTORY_SEPARATOR . $this->my_file_name), $content);
     }
-    
+
     public function testWrite()
     {
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "Change dir successfull");

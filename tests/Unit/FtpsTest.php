@@ -9,7 +9,6 @@ class FtpsTest extends AbstractFtp
 {
     use FtpCredentials;
 
-    
     protected function getInstance()
     {
         return new Ftps();
