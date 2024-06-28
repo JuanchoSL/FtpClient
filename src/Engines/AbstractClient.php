@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace JuanchoSL\FtpClient\Engines;
 
-use FTP\Connection;
 use JuanchoSL\Exceptions\PreconditionRequiredException;
 use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ClientInterface;

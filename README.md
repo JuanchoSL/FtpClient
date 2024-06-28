@@ -15,22 +15,21 @@ You needs to know the remote file server type connection in order to select the 
 ### Instance
 
 #### Direct instantiation
-```
+```php
 $connection = new Ftp();
-
 ```
 #### Using a factory
-```
+```php
 $connection = EngineFactory::getInstance(EnginesEnum::FTP);
 ```
 
 ### Connect
-```
+```php
 $connection->connect("ftp.servername.com", 21);
 ```
 
 ### Authenticate
-```
+```php
 $connection->login("username", "password");
 ```
 
