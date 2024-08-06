@@ -29,7 +29,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function pasive(bool $estado = true): bool
     {
         $this->checkConnection();
-        ftp_set_option($this->link, FTP_USEPASVADDRESS, false);
+        //ftp_set_option($this->link, FTP_USEPASVADDRESS, false);
         return ftp_pasv($this->link, $estado);
     }
 

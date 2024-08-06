@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php" verbose="true" colors="true" cacheResult="false" processIsolation="false">
+<phpunit bootstrap="vendor/autoload.php" verbose="true" colors="true" cacheResult="false" processIsolation="true">
     <testsuites>
         <testsuite name="All">
-            <directory>./tests/</directory>
+            <directory>./tests</directory>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
             <exclude>./tests/Functional/SFtpTest.php</exclude>
         </testsuite>
         <testsuite name="Unit">
-            <directory>./tests/Unit/</directory>
+            <directory>./tests/Unit</directory>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
         </testsuite>
         <testsuite name="Functional">
-            <directory>./tests/Functional/</directory>
+            <directory>./tests/Functional</directory>
             <exclude>./tests/Functional/SFtpTest.php</exclude>
         </testsuite>
     </testsuites>
