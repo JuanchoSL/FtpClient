@@ -13,4 +13,10 @@ class FtpTest extends AbstractFtp
     {
         return new Ftp();
     }
+
+    public function setUp(): void
+    {
+        parent::setUp();
+        $this->ftp->pasive(true);
+    }
 }
