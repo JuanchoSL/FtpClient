@@ -19,9 +19,12 @@
     ],
     "suggest": {
         "ext-ftp": "*",
+        "ext-openssl": "*",
         "ext-ssh2": "*"
     },
     "require": {
+        "ext-ftp": "*",
+        "ext-openssl": "*",
         "php": "^7.2 || ^8.0",
         "juanchosl/exceptions": "1.0.*"
     },

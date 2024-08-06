@@ -18,8 +18,8 @@ jobs:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.3'
-        extensions: ftp, ssh2, openssl
+        php-version: '8.1'
+        extensions: ftp, openssl, ssh2
 
     - uses: actions/checkout@v4
 
