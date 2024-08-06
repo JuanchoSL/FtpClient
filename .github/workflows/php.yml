@@ -19,7 +19,7 @@ jobs:
       uses: shivammathur/setup-php@v2
       with:
         php-version: '8.3'
-        extensions: ftp, openssl, ssh2
+        extensions: ftp,pcntl,openssl,ssh2
 
     - uses: actions/checkout@v4
 
