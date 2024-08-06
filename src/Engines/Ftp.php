@@ -99,7 +99,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function download(string $remote_file, string $local_file): bool
     {
         $this->checkConnection();
-        return ftp_get($this->link, $local_file, $remote_file, FTP_BINARY);
+        return ftp_get($this->link, $local_file, $remote_file, FTP_ASCII);
     }
 
     public function read(string $remote_file): string|false
@@ -133,7 +133,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function upload(string $local_file, string $remote_file): bool
     {
         $this->checkConnection();
-        return ftp_put($this->link, $remote_file, $local_file, FTP_BINARY);
+        return ftp_put($this->link, $remote_file, $local_file, FTP_ASCII);
     }
     
     public function rename(string $old_name, string $new_name): bool
