@@ -18,7 +18,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
 
     public function login(string $user, string $pass): bool
     {
-        $this->logged = @ftp_login($this->link, $user, $pass);
+        $this->logged = ftp_login($this->link, $user, $pass);
         $this->pasive(true);
         return $this->isLogged();
     }

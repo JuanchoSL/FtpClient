@@ -28,8 +28,8 @@ abstract class AbstractFtp extends TestCase
             if (empty($this->ftp)) {
                 $this->ftp = $this->getInstance();
                 $connect = $this->ftp->connect($this->getHost(), $this->getPort());
-                $login = $this->ftp->login($this->getUser(), $this->getPass());
                 $this->assertTrue($connect, "Check conection");
+                $login = $this->ftp->login($this->getUser(), $this->getPass());
                 $this->assertTrue($login, "check login");
             }
             $this->adapter = new ClientAdapter($this->ftp);
