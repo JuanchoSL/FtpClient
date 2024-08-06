@@ -45,7 +45,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
 
     public function disconnect(): bool
     {
-        if ($this->isConnected() && ftp_close($this->link)) {
+        if ($this->isConnected() && @ftp_close($this->link)) {
             $this->connected = false;
             $this->logged = false;
             unset($this->link);
