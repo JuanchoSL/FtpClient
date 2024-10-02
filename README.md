@@ -40,7 +40,9 @@ You have a few generic methods and can operate over directories and files
 
 | Method       | Description |
 | ------------ |-------------|
+| connect      | Connect to a server |
 | isConnected  | Check if is connected |
+| login        | Login into server    |
 | isLogged     | Check if is logged    |
 
 #### Directories

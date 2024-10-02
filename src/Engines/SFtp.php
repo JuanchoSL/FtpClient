@@ -31,7 +31,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
             )
         );
         $callbacks = array('disconnect' => 'my_ssh_disconnect');
-        if (!($this->link = ssh2_connect($server, $port, $methods))) {
+        if (!($this->link = ssh2_connect($server, $port, null))) {
             throw new DestinationUnreachableException("Cannot connect to server");
         }
         //$fingerprint = ssh2_fingerprint($this->link, SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX);
