@@ -1,6 +1,6 @@
 <?php
 
-namespace JuanchoSL\FtpClient\Tests\Functional;
+namespace JuanchoSL\FtpClient\Tests\Functional\LinuxClient;
 
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use JuanchoSL\FtpClient\Enums\EnginesEnum;

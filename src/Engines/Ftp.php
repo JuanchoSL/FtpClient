@@ -56,16 +56,44 @@ class Ftp extends AbstractClient implements ConnectionInterface
         return false;
     }
 
+    public function chmod(string $path, int $permissions): bool
+    {
+        $this->checkConnection();
+        return ftp_chmod($this->link, $permissions, $path) !== false;
+    }
+
+    public function mode(string $path): string
+    {
+        $this->checkConnection();
+        return $this->stat($path)['UNIX.mode'];
+    }
+    public function stat(string $path): array
+    {
+        $this->checkConnection();
+        //return ftp_mlsd($this->link, $path);
+        $stat = ftp_mlsd($this->link, $path);
+        if (empty($stat)) {
+            return [];
+        }
+        return current($stat);
+    }
+
+    public function isDir(string $path): bool
+    {
+        return $this->filesize($path) < 0;
+    }
+
     public function currentDir(): string|false
     {
         $this->checkConnection();
         return ftp_pwd($this->link);
     }
 
-    public function listDir(string $dir = '.'): array|false
+    public function listDirContents(string $dir = '.'): array|false
     {
         $this->checkConnection();
-        return ftp_nlist($this->link, $dir);
+        $contents = ftp_nlist($this->link, $dir);
+        return ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
     }
 
     public function changeDir($dir): bool
@@ -86,18 +114,12 @@ class Ftp extends AbstractClient implements ConnectionInterface
         return ftp_mkdir($this->link, $dir_name) !== false;
     }
 
-    public function renameDir(string $old_name, string $new_name): bool
-    {
-        $this->checkConnection();
-        return ftp_rename($this->link, $old_name, $new_name);
-    }
-
     public function deleteDir(string $path_name): bool
     {
         $this->checkConnection();
         return @ftp_rmdir($this->link, $path_name);
     }
-    
+
     public function download(string $remote_file, string $local_file): bool
     {
         $this->checkConnection();
@@ -131,13 +153,13 @@ class Ftp extends AbstractClient implements ConnectionInterface
         }
         return $result ?? false;
     }
-    
+
     public function upload(string $local_file, string $remote_file): bool
     {
         $this->checkConnection();
         return ftp_put($this->link, $remote_file, $local_file, FTP_BINARY);
     }
-    
+
     public function rename(string $old_name, string $new_name): bool
     {
         $this->checkConnection();
@@ -159,11 +181,16 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function lastModified(string $filepath): ?\DateTimeInterface
     {
         $this->checkConnection();
-        $time =ftp_mdtm($this->link, $filepath);
-        if($time < 0){
-            return null;
+        $stat = $this->stat($filepath);
+        if (!empty($stat) && array_key_exists('modify', $stat)) {
+            return date_create_immutable_from_format("YmdHis", $stat['modify']);
+        } else {
+            $time = ftp_mdtm($this->link, $filepath);
+            if ($time < 0) {
+                return null;
+            }
+            $datetime = new \DateTimeImmutable;
+            return $datetime->setTimestamp($time);
         }
-        $datetime = new \DateTimeImmutable;
-        return $datetime->setTimestamp($time);
     }
 }

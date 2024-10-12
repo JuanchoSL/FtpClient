@@ -43,13 +43,20 @@ interface DirectoryInterface
      * @param string $dir Directorio a listar
      * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function listDir(string $dir = '.'): array|false;
+    public function listDirContents(string $dir = '.'): array|false;
 
     /**
-     * Renombra el directorio pasado al nuevo nomvre dado
-     * @param string $old_name Ruta del recurso a renombrar
-     * @param string $new_name Nueva ruta del recurso
-     * @return boolean Resultado de la operación
+     * Lista los directorios de la ruta especificada
+     * @param string $dir Directorio a listar
+     * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function renameDir(string $old_name, string $new_name): bool;
+    public function listDirs(string $dir = '.'): array|false;
+
+    /**
+     * Lista los ficheros de la ruta especificada
+     * @param string $dir Directorio a listar
+     * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
+     */
+    public function listFiles(string $dir = '.'): array|false;
+
 }

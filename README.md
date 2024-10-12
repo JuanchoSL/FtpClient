@@ -43,19 +43,25 @@ You have a few generic methods and can operate over directories and files
 | connect      | Connect to a server |
 | isConnected  | Check if is connected |
 | login        | Login into server    |
+| disconnect   | Disconnect from server |
 | isLogged     | Check if is logged    |
+| isDir        | Check if is a dir    |
+| chmod        | Change permissions    |
+| mode         | Retrieve permissions    |
+| rename       | Rename file or dir    |
 
 #### Directories
 
 | Method       | Description |
 | ------------ |-------------|
-| listDir      | For list the directory contents     |
+| listDirContents      | For list the directory contents     |
+| listDirs      | For list the directory subdirs     |
+| listFiles     | For list the directory files     |
 | currentDir   | The current directory path     |
 | createDir    | For create a new directory     |
 | changeDir    | For change to the selected directory     |
 | parentDir    | For change to the parent directory     |
 | deleteDir    | For remove a directory     |
-| renameDir    | For rename or move a directory     |
 
 #### Files
 
@@ -65,7 +71,6 @@ You have a few generic methods and can operate over directories and files
 | write         | For write contents into remote file     |
 | download      | For download a file     |
 | read          | For read contents from remote file     |
-| rename        | For rename or move a file     |
 | delete        | For delete a file     |
 | filesize      | For retrieve the filesize     |
 | lastModified  | For retrieve the file last modification      |

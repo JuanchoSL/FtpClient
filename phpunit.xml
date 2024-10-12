@@ -4,15 +4,22 @@
         <testsuite name="All">
             <directory>./tests</directory>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
-            <exclude>./tests/Functional/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/Client/FtpsTest.php</exclude>
+            <exclude>./tests/Functional/Client/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/FtpsTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/SFtpTest.php</exclude>
         </testsuite>
         <testsuite name="Unit">
             <directory>./tests/Unit</directory>
+            <exclude>./tests/Unit/FtpsTest.php</exclude>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
         </testsuite>
         <testsuite name="Functional">
             <directory>./tests/Functional</directory>
-            <exclude>./tests/Functional/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/Client/FtpsTest.php</exclude>
+            <exclude>./tests/Functional/Client/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/FtpsTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/SFtpTest.php</exclude>
         </testsuite>
     </testsuites>
     <php>

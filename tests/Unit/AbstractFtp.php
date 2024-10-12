@@ -63,10 +63,11 @@ abstract class AbstractFtp extends TestCase
 
     public function testUploadFile()
     {
-        $this->assertTrue(empty($this->ftp->listDir($this->my_dir)), "Directory is empty");
+        $this->assertTrue(empty($this->ftp->listDirContents($this->my_dir)), "Directory is empty");
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "Change dir successfull");
         $this->assertTrue($this->ftp->upload($this->my_file_path . DIRECTORY_SEPARATOR . $this->my_file_name, $this->my_file_name), "Upload file");
-        //$this->assertFalse(empty($this->ftp->listDir($this->my_dir)));
+        $this->assertContains($this->my_file_name, $this->ftp->listFiles(), "The file is into directory");
+        //$this->assertFalse(empty($this->ftp->listDirContents($this->my_dir)));
     }
     public function testRead()
     {
@@ -113,10 +114,10 @@ abstract class AbstractFtp extends TestCase
 
     public function testListFolder()
     {
-        $contents = $this->ftp->listDir($this->my_dir);
+        $contents = $this->ftp->listDirContents($this->my_dir);
         $this->assertFalse(empty($contents), "The dir contents is not empty using mode 1");
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "Change to the desired file");
-        $contents2 = $this->ftp->listDir();
+        $contents2 = $this->ftp->listDirContents();
         $this->assertFalse(empty($contents2), "The dir contents is not empty using mode 2");
         $this->assertSameSize($contents, $contents2, "mode 1 and 2 have the same results");
     }
@@ -126,7 +127,7 @@ abstract class AbstractFtp extends TestCase
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "change to the desired dir");
         $this->assertTrue($this->ftp->delete($this->my_file_name . ".old"), "Delete the file");
         $this->assertTrue(unlink($this->my_file_path . DIRECTORY_SEPARATOR . $this->my_file_name . ".old"), "Delete local file");
-        $this->assertTrue(empty($this->ftp->listDir()), "The dir is empty");
+        $this->assertTrue(empty($this->ftp->listDirContents()), "The dir is empty");
     }
 
     public function testDeleteDir()

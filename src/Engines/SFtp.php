@@ -86,6 +86,24 @@ class SFtp extends AbstractClient implements ConnectionInterface
         }
         return false;
     }
+
+    public function chmod(string $path, int $permissions): bool
+    {
+        $this->checkConnection();
+        return ssh2_sftp_chmod($this->conn, $this->getFullPath($path), $permissions) !== false;
+    }
+
+    public function mode(string $path): string
+    {
+        $this->checkConnection();
+        return substr(decoct($this->stat($path)['mode']), -4);
+    }
+
+    public function stat(string $path): array
+    {
+        $this->checkConnection();
+        return ssh2_sftp_stat($this->conn, $this->getFullPath($path));
+    }
     /*
     public function exec($command)
     {
@@ -130,7 +148,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function write(string $remote_file, string $contents): bool
     {
         $this->checkConnection();
-        $tempHandle = @fopen($this->getWrappedPath($remote_file), 'w');
+        $tempHandle = @fopen($this->getWrappedPath($remote_file), 'r+');
         if (!$tempHandle) {
             return false;
         }
@@ -151,6 +169,11 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return ssh2_sftp_rename($this->conn, $this->getFullPath($original_dir), $this->getFullPath($new_dir));
     }
 
+    public function isDir(string $file): bool
+    {
+        $this->checkConnection();
+        return is_dir($this->getWrappedPath($file));
+    }
     public function filesize(string $file): int
     {
         $this->checkConnection();
@@ -173,12 +196,6 @@ class SFtp extends AbstractClient implements ConnectionInterface
     {
         $this->checkConnection();
         return ssh2_sftp_mkdir($this->conn, $dir);
-    }
-
-    public function renameDir(string $original_dir, $new_dir): bool
-    {
-        $this->checkConnection();
-        return ssh2_sftp_rename($this->conn, $original_dir, $new_dir);
     }
 
     public function deleteDir(string $dir): bool
@@ -214,7 +231,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return $this->last_dir;
     }
 
-    public function listDir(string $dir = '.'): array|false
+    public function listDirContents(string $dir = '.'): array|false
     {
         $this->checkConnection();
         $contents = scandir($this->getWrappedPath($dir));
