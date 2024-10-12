@@ -94,12 +94,12 @@ class ClientAdapter implements ClientInterface
         return $this->connection->listDirContents($dir);
     }
 
-    public function listDirs(string $dir = '.', bool $info = true, string $sort = null): array|false
+    public function listDirs(string $dir = '.', bool $info = false, string $sort = null): array|false
     {
         return $this->connection->listDirs($dir, $info, $sort);
     }
 
-    public function listFiles(string $dir = '.', bool $info = true, string $sort = null): array|false
+    public function listFiles(string $dir = '.', bool $info = false, string $sort = null): array|false
     {
         return $this->connection->listFiles($dir, $info, $sort);
     }

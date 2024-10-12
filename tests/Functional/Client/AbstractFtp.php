@@ -53,6 +53,7 @@ abstract class AbstractFtp extends TestCase
     public function testCreateDir()
     {
         $this->assertTrue($this->adapter->createDir($this->my_dir), "Check that directory is created");
+        $this->assertContains($this->my_dir, $this->adapter->listDirs(), "The directory is into directory");
     }
 
     public function testChangeDir()

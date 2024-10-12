@@ -75,12 +75,12 @@ class LinuxClientAdapter
         return $this->connection->listDirContents($dir);
     }
 
-    public function lsDirs(string $dir = '.', bool $info = true, string $sort = null): array|false
+    public function lsDirs(string $dir = '.', bool $info = false, string $sort = null): array|false
     {
         return $this->connection->listDirs($dir, $info, $sort);
     }
 
-    public function lsFiles(string $dir = '.', bool $info = true, string $sort = null): array|false
+    public function lsFiles(string $dir = '.', bool $info = false, string $sort = null): array|false
     {
         return $this->connection->listFiles($dir, $info, $sort);
     }
