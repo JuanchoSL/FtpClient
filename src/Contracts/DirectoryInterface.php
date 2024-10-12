@@ -48,15 +48,27 @@ interface DirectoryInterface
     /**
      * Lista los directorios de la ruta especificada
      * @param string $dir Directorio a listar
+     * @param bool $info True para devolver info extendida de cada elemento, false solo para nombres
+     * @param string $sort Nombre del atributo a usar para ordenar, ascendente, puede ser
+     * - name
+     * - mtime
+     * - size
+     * - mode
      * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function listDirs(string $dir = '.'): array|false;
+    public function listDirs(string $dir = '.', bool $info = true, string $sort = null): array|false;
 
     /**
      * Lista los ficheros de la ruta especificada
      * @param string $dir Directorio a listar
+     * @param bool $info True para devolver info extendida de cada elemento, false solo para nombres
+     * @param string $sort Nombre del atributo a usar para ordenar, ascendente, puede ser
+     * - name
+     * - mtime
+     * - size
+     * - mode
      * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function listFiles(string $dir = '.'): array|false;
+    public function listFiles(string $dir = '.', bool $info = true, string $sort = null): array|false;
 
 }

@@ -65,7 +65,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function mode(string $path): string
     {
         $this->checkConnection();
-        return $this->stat($path)['UNIX.mode'];
+        return $this->stat($path)['UNIX.mode']??'----';
     }
     public function stat(string $path): array
     {
