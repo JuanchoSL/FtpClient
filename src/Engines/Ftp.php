@@ -32,6 +32,7 @@ class Ftp extends AbstractClient implements ConnectionInterface
         if (!$this->isLogged()) {
             throw new UnauthorizedException("Failed authenticating with the provided credentials");
         }
+        $this->pasive(true);
         return $this->isLogged();
     }
 
