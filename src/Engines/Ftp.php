@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace JuanchoSL\FtpClient\Engines;
 
+use JuanchoSL\Exceptions\DestinationUnreachableException;
+use JuanchoSL\Exceptions\PreconditionRequiredException;
+use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use JuanchoSL\FtpClient\Engines\AbstractClient;
 
@@ -12,14 +15,23 @@ class Ftp extends AbstractClient implements ConnectionInterface
 
     public function connect(string $server, int $port = 21): bool
     {
+        if (!extension_loaded('ftp')) {
+            throw new PreconditionRequiredException("The FTP extension is not available");
+        }
         $this->link = ftp_connect($server, $port);
-        return $this->connected = ($this->link !== false);
+        $this->connected = ($this->link !== false);
+        if(!$this->isConnected()){
+            throw new DestinationUnreachableException("Can not connect to the desired service");
+        }
+        return $this->isConnected();
     }
 
     public function login(string $user, string $pass): bool
     {
         $this->logged = ftp_login($this->link, $user, $pass);
-        $this->pasive(true);
+        if (!$this->isLogged()) {
+            throw new UnauthorizedException("Failed authenticating with the provided credentials");
+        }
         return $this->isLogged();
     }
 

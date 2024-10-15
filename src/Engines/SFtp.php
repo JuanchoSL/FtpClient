@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace JuanchoSL\FtpClient\Engines;
 
 use JuanchoSL\Exceptions\DestinationUnreachableException;
+use JuanchoSL\Exceptions\PreconditionRequiredException;
+use JuanchoSL\Exceptions\ServiceUnavailableException;
+use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use JuanchoSL\FtpClient\Engines\AbstractClient;
 
@@ -16,6 +19,9 @@ class SFtp extends AbstractClient implements ConnectionInterface
 
     public function connect(string $server, int $port = 22): bool
     {
+        if (!extension_loaded('ssh2')) {
+            throw new PreconditionRequiredException("The SSH2 extension is not available");
+        }
         $methods = array(
             'kex' => 'diffie-hellman-group-exchange-sha256,diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1',
             'hostkey' => 'ssh-rsa',
@@ -57,19 +63,15 @@ class SFtp extends AbstractClient implements ConnectionInterface
             $this->logged = ssh2_auth_pubkey_file($this->link, $user, $pass, str_replace('.pub', '', $pass));
         } else {
             $this->logged = @ssh2_auth_password($this->link, $user, $pass);
-            /*            
-                        $pkey = ssh2_publickey_init($this->link);
-                        $list = ssh2_publickey_list($pkey);
-                        foreach ($list as $key) {
-                            echo "Key: {$key['name']}\n";
-                            echo "Blob: " . chunk_split(base64_encode($key['blob']), 40, "\n") . "\n";
-                            echo "Comment: {$key['attrs']['comment']}\n\n";
-                        }
-                        exit;
-            */
+        }
+        if (!$this->isLogged()) {
+            throw new UnauthorizedException("Failed authenticating with the provided credentials");
         }
         $this->conn = ssh2_sftp($this->link);
-        return ($this->logged !== false);
+        if ($this->conn === false) {
+            throw new ServiceUnavailableException("Can not initialize the sftp subsystem");
+        }
+        return $this->isLogged();
     }
 
     public function disconnect(): bool
@@ -207,6 +209,9 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function changeDir(string $dir): bool
     {
         $this->checkConnection();
+        if (!$this->isDir($dir)) {
+            return false;
+        }
         if (substr($dir, 0, 1) === '/') {
             $this->last_dir = $dir;
         } else {
