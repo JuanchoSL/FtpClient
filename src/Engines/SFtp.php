@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace JuanchoSL\FtpClient\Engines;
 
 use JuanchoSL\Exceptions\DestinationUnreachableException;
+use JuanchoSL\Exceptions\PreconditionRequiredException;
+use JuanchoSL\Exceptions\ServiceUnavailableException;
+use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use JuanchoSL\FtpClient\Engines\AbstractClient;
 
@@ -16,6 +19,9 @@ class SFtp extends AbstractClient implements ConnectionInterface
 
     public function connect(string $server, int $port = 22): bool
     {
+        if (!extension_loaded('ssh2')) {
+            throw new PreconditionRequiredException("The SSH2 extension is not available");
+        }
         $methods = array(
             'kex' => 'diffie-hellman-group-exchange-sha256,diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1',
             'hostkey' => 'ssh-rsa',
@@ -31,7 +37,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
             )
         );
         $callbacks = array('disconnect' => 'my_ssh_disconnect');
-        if (!($this->link = ssh2_connect($server, $port, $methods))) {
+        if (!($this->link = ssh2_connect($server, $port, null))) {
             throw new DestinationUnreachableException("Cannot connect to server");
         }
         //$fingerprint = ssh2_fingerprint($this->link, SSH2_FINGERPRINT_MD5 | SSH2_FINGERPRINT_HEX);
@@ -57,19 +63,15 @@ class SFtp extends AbstractClient implements ConnectionInterface
             $this->logged = ssh2_auth_pubkey_file($this->link, $user, $pass, str_replace('.pub', '', $pass));
         } else {
             $this->logged = @ssh2_auth_password($this->link, $user, $pass);
-            /*            
-                        $pkey = ssh2_publickey_init($this->link);
-                        $list = ssh2_publickey_list($pkey);
-                        foreach ($list as $key) {
-                            echo "Key: {$key['name']}\n";
-                            echo "Blob: " . chunk_split(base64_encode($key['blob']), 40, "\n") . "\n";
-                            echo "Comment: {$key['attrs']['comment']}\n\n";
-                        }
-                        exit;
-            */
+        }
+        if (!$this->isLogged()) {
+            throw new UnauthorizedException("Failed authenticating with the provided credentials");
         }
         $this->conn = ssh2_sftp($this->link);
-        return ($this->logged !== false);
+        if ($this->conn === false) {
+            throw new ServiceUnavailableException("Can not initialize the sftp subsystem");
+        }
+        return $this->isLogged();
     }
 
     public function disconnect(): bool
@@ -85,6 +87,24 @@ class SFtp extends AbstractClient implements ConnectionInterface
             }
         }
         return false;
+    }
+
+    public function chmod(string $path, int $permissions): bool
+    {
+        $this->checkConnection();
+        return ssh2_sftp_chmod($this->conn, $this->getFullPath($path), $permissions) !== false;
+    }
+
+    public function mode(string $path): string
+    {
+        $this->checkConnection();
+        return substr(decoct($this->stat($path)['mode']), -4);
+    }
+
+    public function stat(string $path): array
+    {
+        $this->checkConnection();
+        return ssh2_sftp_stat($this->conn, $this->getFullPath($path));
     }
     /*
     public function exec($command)
@@ -130,7 +150,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function write(string $remote_file, string $contents): bool
     {
         $this->checkConnection();
-        $tempHandle = @fopen($this->getWrappedPath($remote_file), 'w');
+        $tempHandle = @fopen($this->getWrappedPath($remote_file), 'r+');
         if (!$tempHandle) {
             return false;
         }
@@ -151,6 +171,11 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return ssh2_sftp_rename($this->conn, $this->getFullPath($original_dir), $this->getFullPath($new_dir));
     }
 
+    public function isDir(string $file): bool
+    {
+        $this->checkConnection();
+        return is_dir($this->getWrappedPath($file));
+    }
     public function filesize(string $file): int
     {
         $this->checkConnection();
@@ -175,12 +200,6 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return ssh2_sftp_mkdir($this->conn, $dir);
     }
 
-    public function renameDir(string $original_dir, $new_dir): bool
-    {
-        $this->checkConnection();
-        return ssh2_sftp_rename($this->conn, $original_dir, $new_dir);
-    }
-
     public function deleteDir(string $dir): bool
     {
         $this->checkConnection();
@@ -190,6 +209,9 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function changeDir(string $dir): bool
     {
         $this->checkConnection();
+        if (!$this->isDir($dir)) {
+            return false;
+        }
         if (substr($dir, 0, 1) === '/') {
             $this->last_dir = $dir;
         } else {
@@ -214,7 +236,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return $this->last_dir;
     }
 
-    public function listDir(string $dir = '.'): array|false
+    public function listDirContents(string $dir = '.'): array|false
     {
         $this->checkConnection();
         $contents = scandir($this->getWrappedPath($dir));

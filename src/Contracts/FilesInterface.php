@@ -36,14 +36,6 @@ interface FilesInterface
     public function write(string $remote_file, string $contents): bool;
 
     /**
-     * Renombra el fichero o directorio pasado
-     * @param string $old_name Ruta del recurso a renombrar
-     * @param string $new_name Nuevo nombre del recurso
-     * @return boolean Resultado de la operación
-     */
-    public function rename(string $old_name, string $new_name): bool;
-
-    /**
      * Elimina el fichero especificado
      * @param string $path_name Ruta del fichero a eliminar
      * @return boolean Resultado de la operación

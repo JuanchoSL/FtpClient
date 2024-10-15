@@ -7,8 +7,8 @@
     "minimum-stability": "stable",
     "keywords": [
         "ftp",
-        "sftp",
-        "ftps"
+        "ftps",
+        "sftp"
     ],
     "authors": [
         {
@@ -19,11 +19,12 @@
     ],
     "suggest": {
         "ext-ftp": "*",
+        "ext-openssl": "*",
         "ext-ssh2": "*"
     },
     "require": {
         "php": "^7.2 || ^8.0",
-        "juanchosl/exceptions": "^1.0"
+        "juanchosl/exceptions": "1.0.*"
     },
     "require-dev": {
         "phpstan/phpstan": "1.10.*",

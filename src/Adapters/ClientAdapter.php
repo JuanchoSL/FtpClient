@@ -15,6 +15,11 @@ class ClientAdapter implements ClientInterface
         $this->connection = $connection;
     }
 
+    public function chmod(string $path, int $permissions): bool
+    {
+        return $this->connection->chmod($path, $permissions) !== false;
+    }
+
     public function upload(string $local_file, string $remote_file): bool
     {
         return $this->connection->upload($local_file, $remote_file);
@@ -60,11 +65,6 @@ class ClientAdapter implements ClientInterface
         return $this->connection->createDir($dir);
     }
 
-    public function renameDir(string $original_dir, $new_dir): bool
-    {
-        return $this->connection->renameDir($original_dir, $new_dir);
-    }
-
     public function deleteDir(string $dir): bool
     {
         return $this->connection->deleteDir($dir);
@@ -84,9 +84,23 @@ class ClientAdapter implements ClientInterface
     {
         return $this->connection->currentDir();
     }
-
-    public function listDir(string $dir = '.'): array|false
+    public function isDir(string $path): bool
     {
-        return $this->connection->listDir($dir);
+        return $this->connection->isDir($path);
+    }
+
+    public function listDirContents(string $dir = '.'): array|false
+    {
+        return $this->connection->listDirContents($dir);
+    }
+
+    public function listDirs(string $dir = '.', bool $info = false, string $sort = null): array|false
+    {
+        return $this->connection->listDirs($dir, $info, $sort);
+    }
+
+    public function listFiles(string $dir = '.', bool $info = false, string $sort = null): array|false
+    {
+        return $this->connection->listFiles($dir, $info, $sort);
     }
 }
