@@ -17,7 +17,7 @@ class ClientAdapter implements ClientInterface
 
     public function chmod(string $path, int $permissions): bool
     {
-        return $this->chmod($path, $permissions) !== false;
+        return $this->connection->chmod($path, $permissions) !== false;
     }
 
     public function upload(string $local_file, string $remote_file): bool

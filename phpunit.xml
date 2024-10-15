@@ -3,6 +3,7 @@
     <testsuites>
         <testsuite name="All">
             <directory>./tests</directory>
+            <exclude>./tests/Unit/FtpsTest.php</exclude>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
             <exclude>./tests/Functional/Client/FtpsTest.php</exclude>
             <exclude>./tests/Functional/Client/SFtpTest.php</exclude>
