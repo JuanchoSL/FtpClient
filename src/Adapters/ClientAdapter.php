@@ -20,6 +20,11 @@ class ClientAdapter implements ClientInterface
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
+    public function mode(string $path): bool
+    {
+        return $this->connection->mode($path) !== false;
+    }
+
     public function upload(string $local_file, string $remote_file): bool
     {
         return $this->connection->upload($local_file, $remote_file);
@@ -40,16 +45,6 @@ class ClientAdapter implements ClientInterface
         return $this->connection->write($remote_file, $contents);
     }
 
-    public function delete(string $file): bool
-    {
-        return $this->connection->delete($file);
-    }
-
-    public function rename(string $original_dir, $new_dir): bool
-    {
-        return $this->connection->rename($original_dir, $new_dir);
-    }
-
     public function filesize(string $file): int
     {
         return $this->connection->filesize($file);
@@ -58,6 +53,16 @@ class ClientAdapter implements ClientInterface
     public function lastModified(string $filepath): ?\DateTimeInterface
     {
         return $this->connection->lastModified($filepath);
+    }
+
+    public function delete(string $file): bool
+    {
+        return $this->connection->delete($file);
+    }
+
+    public function rename(string $original_dir, $new_dir): bool
+    {
+        return $this->connection->rename($original_dir, $new_dir);
     }
 
     public function createDir(string $dir): bool
@@ -94,12 +99,12 @@ class ClientAdapter implements ClientInterface
         return $this->connection->listDirContents($dir);
     }
 
-    public function listDirs(string $dir = '.', bool $info = false, string $sort = null): array|false
+    public function listDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false
     {
         return $this->connection->listDirs($dir, $info, $sort);
     }
 
-    public function listFiles(string $dir = '.', bool $info = false, string $sort = null): array|false
+    public function listFiles(string $dir = '.', bool $info = false, ?string $sort = null): array|false
     {
         return $this->connection->listFiles($dir, $info, $sort);
     }

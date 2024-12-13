@@ -23,7 +23,7 @@ abstract class AbstractFtp extends TestCase
     public function setUp(): void
     {
         $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 3), 'etc']);
-        $this->my_dir = "juancho-test-" . date('Y-m-d');
+        $this->my_dir = "juancho-test-" . date('Y-m-d') . '-functional-client';
         if (empty($this->adapter)) {
             if (empty($this->ftp)) {
                 $this->ftp = $this->getInstance();
@@ -47,7 +47,7 @@ abstract class AbstractFtp extends TestCase
     public function testReadable()
     {
         $root_dir = $this->adapter->currentDir();
-        $this->assertFalse(empty($root_dir), "Check that currrent dir is not empty");
+        $this->assertFalse(empty($root_dir), "Check that current dir is not empty");
     }
 
     public function testCreateDir()

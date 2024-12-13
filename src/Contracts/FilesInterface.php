@@ -28,9 +28,9 @@ interface FilesInterface
     public function read(string $remote_file): string|false;
     
     /**
-     * Escribe es un fichero del servidor remoto
-     * @param string $remote_file Ruta del fichero a escribir
-     * @param string $contents Contenido a escribir
+     * Escribe en un fichero del servidor remoto, lo crea o agrega la nueva info si ya esiste
+     * @param string $remote_file Ruta del fichero de destino
+     * @param string $contents Contenido a escribir o path del fichero de origen
      * @return boolean Resultado de la operación
      */
     public function write(string $remote_file, string $contents): bool;

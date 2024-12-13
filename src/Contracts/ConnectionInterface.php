@@ -22,7 +22,7 @@ interface ConnectionInterface
      * @return boolean Resultado de la operación
      * @throws \JuanchoSL\Exceptions\UnauthorizedException Si no se puede autenticar
      */
-    public function login(string $user, string $pass): bool;
+    public function login(string $user, #[\SensitiveParameter] string $pass): bool;
     
     /**
      * Cierra la conexión con el servidor FTP

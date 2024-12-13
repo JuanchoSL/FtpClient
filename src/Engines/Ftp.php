@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace JuanchoSL\FtpClient\Engines;
 
 use JuanchoSL\Exceptions\DestinationUnreachableException;
-use JuanchoSL\Exceptions\PreconditionRequiredException;
 use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use JuanchoSL\FtpClient\Engines\AbstractClient;
@@ -15,22 +14,37 @@ class Ftp extends AbstractClient implements ConnectionInterface
 
     public function connect(string $server, int $port = 21): bool
     {
-        if (!extension_loaded('ftp')) {
-            throw new PreconditionRequiredException("The FTP extension is not available");
-        }
+        $this->checkExtension('ftp');
         $this->link = ftp_connect($server, $port);
         $this->connected = ($this->link !== false);
-        if(!$this->isConnected()){
-            throw new DestinationUnreachableException("Can not connect to the desired service");
+        if (!$this->isConnected()) {
+            $exception = new DestinationUnreachableException("Can not connect to the desired server");
+            $this->log($exception, 'error', [
+                'exception' => $exception,
+                'credentials' => [
+                    'host' => $server,
+                    'port' => $port,
+                ]
+            ]);
+            throw $exception;
         }
         return $this->isConnected();
     }
 
-    public function login(string $user, string $pass): bool
+    public function login(string $user, #[\SensitiveParameter] string $pass): bool
     {
         $this->logged = ftp_login($this->link, $user, $pass);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $this->isLogged()]);
         if (!$this->isLogged()) {
-            throw new UnauthorizedException("Failed authenticating with the provided credentials");
+            $exception = new UnauthorizedException("Failed authenticating with the provided credentials");
+            $this->log($exception, 'error', [
+                'exception' => $exception,
+                'credentials' => [
+                    'user' => $user,
+                    'pass' => $pass,
+                ]
+            ]);
+            throw $exception;
         }
         $this->pasive(true);
         return $this->isLogged();
@@ -45,7 +59,9 @@ class Ftp extends AbstractClient implements ConnectionInterface
     {
         $this->checkConnection();
         ftp_set_option($this->link, FTP_USEPASVADDRESS, $estado);
-        return ftp_pasv($this->link, $estado);
+        $result = ftp_pasv($this->link, $estado);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     /**
@@ -55,7 +71,9 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function system()
     {
         $this->checkConnection();
-        return ftp_systype($this->link);
+        $result = ftp_systype($this->link);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function disconnect(): bool
@@ -72,71 +90,91 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function chmod(string $path, int $permissions): bool
     {
         $this->checkConnection();
-        return ftp_chmod($this->link, $permissions, $path) !== false;
+        $result = ftp_chmod($this->link, $permissions, $path) !== false;
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function mode(string $path): string
     {
         $this->checkConnection();
-        return $this->stat($path)['UNIX.mode'] ?? '----';
+        $result = $this->stat($path)['UNIX.mode'] ?? '----';
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
     public function stat(string $path): array
     {
         $this->checkConnection();
         //return ftp_mlsd($this->link, $path);
         $stat = ftp_mlsd($this->link, $path);
-        if (empty($stat)) {
-            return [];
-        }
-        return current($stat);
+        $result = (empty($stat)) ? [] : current($stat);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function isDir(string $path): bool
     {
-        return $this->filesize($path) < 0;
+        $filesize = $this->filesize($path);
+        $result = $filesize < 0;
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'filesize' => $filesize, 'result' => $result]);
+        return $result;
     }
 
     public function currentDir(): string|false
     {
         $this->checkConnection();
-        return ftp_pwd($this->link);
+        $result = ftp_pwd($this->link);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function listDirContents(string $dir = '.'): array|false
     {
         $this->checkConnection();
         $contents = ftp_nlist($this->link, $dir);
-        return ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
+        $result = ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function changeDir($dir): bool
     {
         $this->checkConnection();
-        return @ftp_chdir($this->link, $dir);
+        $result = @ftp_chdir($this->link, $dir);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function parentDir(): bool
     {
         $this->checkConnection();
-        return ftp_cdup($this->link);
+        $result = ftp_cdup($this->link);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function createDir(string $dir_name): bool
     {
         $this->checkConnection();
-        return ftp_mkdir($this->link, $dir_name) !== false;
+        $result = ftp_mkdir($this->link, $dir_name) !== false;
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function deleteDir(string $path_name): bool
     {
         $this->checkConnection();
-        return @ftp_rmdir($this->link, $path_name);
+        $result = @ftp_rmdir($this->link, $path_name);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function download(string $remote_file, string $local_file): bool
     {
         $this->checkConnection();
-        return ftp_get($this->link, $local_file, $remote_file, FTP_BINARY);
+        $result = ftp_get($this->link, $local_file, $remote_file, FTP_BINARY);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function read(string $remote_file): string|false
@@ -151,44 +189,59 @@ class Ftp extends AbstractClient implements ConnectionInterface
             }
             fclose($tempHandle);
         }
-        return $contents ?? false;
+        $result = $contents ?? false;
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result !== false]);
+        return $result;
     }
 
     public function write(string $remote_file, string $contents): bool
     {
         $this->checkConnection();
-        $tempHandle = fopen('php://temp', 'r+');
-        if ($tempHandle) {
-            fwrite($tempHandle, $contents);
-            rewind($tempHandle);
-            $result = @ftp_fput($this->link, $remote_file, $tempHandle, FTP_ASCII, 0);
-            fclose($tempHandle);
+        if (is_file($contents) && file_exists($contents)) {
+            $result = @ftp_append($this->link, $remote_file, $contents, FTP_ASCII);
+        } else {
+            $tempHandle = fopen('php://temp', 'a+');
+            if ($tempHandle) {
+                fwrite($tempHandle, $contents);
+                rewind($tempHandle);
+                $result = @ftp_fput($this->link, $remote_file, $tempHandle, FTP_ASCII, 0);
+                fclose($tempHandle);
+            }
         }
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result ?? false;
     }
 
     public function upload(string $local_file, string $remote_file): bool
     {
         $this->checkConnection();
-        return ftp_put($this->link, $remote_file, $local_file, FTP_BINARY);
+        $result = ftp_put($this->link, $remote_file, $local_file, FTP_BINARY);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function rename(string $old_name, string $new_name): bool
     {
         $this->checkConnection();
-        return ftp_rename($this->link, $old_name, $new_name);
+        $result = ftp_rename($this->link, $old_name, $new_name);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function delete(string $path_name): bool
     {
         $this->checkConnection();
-        return ftp_delete($this->link, $path_name);
+        $result = ftp_delete($this->link, $path_name);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function filesize($filepath): int
     {
         $this->checkConnection();
-        return ftp_size($this->link, $filepath);
+        $result = ftp_size($this->link, $filepath);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 
     public function lastModified(string $filepath): ?\DateTimeInterface
@@ -196,14 +249,16 @@ class Ftp extends AbstractClient implements ConnectionInterface
         $this->checkConnection();
         $stat = $this->stat($filepath);
         if (!empty($stat) && array_key_exists('modify', $stat)) {
-            return date_create_immutable_from_format("YmdHis", $stat['modify']);
+            $result = date_create_immutable_from_format("YmdHis", $stat['modify']);
         } else {
+            $result = null;
             $time = ftp_mdtm($this->link, $filepath);
-            if ($time < 0) {
-                return null;
+            if ($time >= 0) {
+                $datetime = new \DateTimeImmutable;
+                $result = $datetime->setTimestamp($time);
             }
-            $datetime = new \DateTimeImmutable;
-            return $datetime->setTimestamp($time);
         }
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
     }
 }

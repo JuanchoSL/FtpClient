@@ -56,7 +56,7 @@ interface DirectoryInterface
      * - mode
      * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function listDirs(string $dir = '.', bool $info = true, string $sort = null): array|false;
+    public function listDirs(string $dir = '.', bool $info = true, ?string $sort = null): array|false;
 
     /**
      * Lista los ficheros de la ruta especificada
@@ -69,6 +69,6 @@ interface DirectoryInterface
      * - mode
      * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function listFiles(string $dir = '.', bool $info = true, string $sort = null): array|false;
+    public function listFiles(string $dir = '.', bool $info = true, ?string $sort = null): array|false;
 
 }
