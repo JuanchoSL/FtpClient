@@ -88,3 +88,28 @@ You have a few generic methods and can operate over directories and files
 | -------------- |-------------|
 | getFingerprint | Retrieve and return the server fingerprint   |
 | getNegotiation | Retrieve and return the negotiation methods  |
+
+
+## Adapters
+
+You can use a wrapper in order to call the library functions using the native names from few OS
+
+|       Client      |     Linux     |   Windows     | Description   |
+| chmod             | chmod         | icacls        | Change permissions    |
+| mode              | stat          | cacls         | Retrieve permissions    |
+| rename            | mv            | move          | Rename file or dir    |
+| listDirContents   | ls            | dir           | For list the directory contents     |
+| listDirs          | lsDirs        | dirDirs       | For list the directory subdirs     |
+| listFiles         | lsFiles       | dirFiles      | For list the directory files     |
+| currentDir        | pwd           | cd            | The current directory path     |
+| createDir         | mkdir         | mkdir         | For create a new directory     |
+| changeDir         | cd            | cd            | For change to the selected directory     |
+| parentDir         | cdUp          | cdUp          | For change to the parent directory     |
+| deleteDir         | rm            | rmdir         | For remove a directory     |
+| upload            | put           | put           | For upload a file     |
+| write             | put           | put           | For write contents into remote file     |
+| download          | get           | get           | For download a file     |
+| read              | get           | get           | For read contents from remote file     |
+| delete            | rm            | del           | For delete a file     |
+| filesize          | filesize      | filesize      | For retrieve the filesize     |
+| lastModified      | lastModified  | lastModified  | For retrieve the file last modification      |

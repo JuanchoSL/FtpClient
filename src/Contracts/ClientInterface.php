@@ -14,6 +14,13 @@ interface ClientInterface extends DirectoryInterface, FilesInterface
     public function chmod(string $path, int $permissions): bool;
 
     /**
+     * Show the file or directory permissions
+     * @param string $path Fullpath of the file or directory
+     * @return mixed Result of the operation
+     */
+    public function mode(string $path): mixed;
+
+    /**
      * Check if the path is a directory
      * @param string $path Path to check
      * @return bool true if is a directory, false otherwise

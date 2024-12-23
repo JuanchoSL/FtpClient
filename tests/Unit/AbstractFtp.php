@@ -21,7 +21,7 @@ abstract class AbstractFtp extends TestCase
     public function setUp(): void
     {
         $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']);
-        $this->my_dir = "juancho-test-" . date('Y-m-d');
+        $this->my_dir = "juancho-test-" . date('Y-m-d') . '-unit';
 
         $this->ftp = $this->getInstance();
         $connect = $this->ftp->connect($this->getHost(), $this->getPort());

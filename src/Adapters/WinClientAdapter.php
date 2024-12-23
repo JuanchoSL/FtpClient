@@ -6,7 +6,7 @@ namespace JuanchoSL\FtpClient\Adapters;
 
 use JuanchoSL\FtpClient\Contracts\ClientInterface;
 
-class LinuxClientAdapter
+class WinClientAdapter
 {
     protected ClientInterface $connection;
 
@@ -15,12 +15,12 @@ class LinuxClientAdapter
         $this->connection = $connection;
     }
 
-    public function chmod(string $path, int $permissions): bool
+    public function icacls(string $path, int $permissions): bool
     {
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
-    public function stat(string $path): bool
+    public function cacls(string $path): bool
     {
         return $this->connection->mode($path) !== false;
     }
@@ -44,13 +44,13 @@ class LinuxClientAdapter
     {
         return $this->connection->lastModified($filepath);
     }
-    
-    public function rm(string $path): bool
+
+    public function del(string $path): bool
     {
-        return ($this->connection->isDir($path)) ? $this->connection->deleteDir($path) : $this->connection->delete($path);
+        return $this->connection->delete($path);
     }
-    
-    public function mv(string $original_dir, $new_dir): bool
+
+    public function move(string $original_dir, $new_dir): bool
     {
         return $this->connection->rename($original_dir, $new_dir);
     }
@@ -60,9 +60,20 @@ class LinuxClientAdapter
         return $this->connection->createDir($dir);
     }
 
-    public function cd(string $dir): bool
+    public function rmdir(string $path): bool
     {
-        return $this->connection->changeDir($dir);
+        return $this->connection->deleteDir($path);
+    }
+
+    public function cd(?string $dir = null): bool|string
+    {
+        if (is_null($dir)) {
+            return $this->connection->currentDir();
+        } elseif ($dir == '..') {
+            return $this->cdUp();
+        } else {
+            return $this->connection->changeDir($dir);
+        }
     }
 
     public function cdUp(): bool
@@ -70,22 +81,17 @@ class LinuxClientAdapter
         return $this->connection->parentDir();
     }
 
-    public function pwd(): string|false
-    {
-        return $this->connection->currentDir();
-    }
-
-    public function ls(string $dir = '.'): array|false
+    public function dir(string $dir = '.'): array|false
     {
         return $this->connection->listDirContents($dir);
     }
 
-    public function lsDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false
+    public function dirDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false
     {
         return $this->connection->listDirs($dir, $info, $sort);
     }
 
-    public function lsFiles(string $dir = '.', bool $info = false, ?string $sort = null): array|false
+    public function dirFiles(string $dir = '.', bool $info = false, ?string $sort = null): array|false
     {
         return $this->connection->listFiles($dir, $info, $sort);
     }
