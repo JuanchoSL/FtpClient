@@ -95,6 +95,7 @@ You have a few generic methods and can operate over directories and files
 You can use a wrapper in order to call the library functions using the native names from few OS
 
 |       Client      |     Linux     |   Windows     | Description   |
+|-------------------|---------------|---------------|---------------|
 | chmod             | chmod         | icacls        | Change permissions    |
 | mode              | stat          | cacls         | Retrieve permissions    |
 | rename            | mv            | move          | Rename file or dir    |
