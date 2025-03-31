@@ -12,7 +12,9 @@ use JuanchoSL\FtpClient\Engines\AbstractClient;
 class Ftp extends AbstractClient implements ConnectionInterface
 {
 
-    public function connect(string $server, int $port = 21): bool
+    const int DEFAULT_PORT = 21;
+
+    public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
         $this->checkExtension('ftp');
         $this->link = ftp_connect($server, $port);

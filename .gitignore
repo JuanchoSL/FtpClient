@@ -1,4 +1,5 @@
 /bin/
+/logs/
 /vendor/
 .vscode
 /etc/home-ssh-server

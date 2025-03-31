@@ -13,10 +13,12 @@ use JuanchoSL\FtpClient\Engines\AbstractClient;
 class SFtp extends AbstractClient implements ConnectionInterface
 {
 
+    const int DEFAULT_PORT = 22;
+    
     private $conn;
     private string $last_dir = '/';
 
-    public function connect(string $server, int $port = 22): bool
+    public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
         $this->checkExtension('ssh2');
         $methods = array(
