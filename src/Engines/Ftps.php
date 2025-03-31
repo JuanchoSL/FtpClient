@@ -10,7 +10,7 @@ use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 class Ftps extends Ftp implements ConnectionInterface
 {
 
-    public function connect(string $server, int $port = 21): bool
+    public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
         $this->checkExtension('ftp', 'openssl');
         $this->link = ftp_ssl_connect($server, $port);
