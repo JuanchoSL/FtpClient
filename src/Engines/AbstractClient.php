@@ -7,9 +7,10 @@ namespace JuanchoSL\FtpClient\Engines;
 use JuanchoSL\Exceptions\PreconditionRequiredException;
 use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ClientInterface;
+use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-abstract class AbstractClient implements ClientInterface
+abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
 {
 
     use LoggerAwareTrait;

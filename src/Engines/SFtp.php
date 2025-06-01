@@ -13,7 +13,7 @@ use JuanchoSL\FtpClient\Engines\AbstractClient;
 class SFtp extends AbstractClient implements ConnectionInterface
 {
 
-    const int DEFAULT_PORT = 22;
+    const DEFAULT_PORT = 22;
     
     private $conn;
     private string $last_dir = '/';
