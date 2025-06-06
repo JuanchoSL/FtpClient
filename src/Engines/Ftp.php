@@ -12,7 +12,7 @@ use JuanchoSL\FtpClient\Engines\AbstractClient;
 class Ftp extends AbstractClient implements ConnectionInterface
 {
 
-    const int DEFAULT_PORT = 21;
+    const DEFAULT_PORT = 21;
 
     public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
