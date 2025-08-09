@@ -20,9 +20,9 @@ class ClientAdapter implements ClientInterface
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
-    public function mode(string $path): bool
+    public function mode(string $path): mixed
     {
-        return $this->connection->mode($path) !== false;
+        return $this->connection->mode($path);
     }
 
     public function upload(string $local_file, string $remote_file): bool

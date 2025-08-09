@@ -20,9 +20,9 @@ class LinuxClientAdapter
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
-    public function stat(string $path): bool
+    public function stat(string $path): mixed
     {
-        return $this->connection->mode($path) !== false;
+        return $this->connection->mode($path);
     }
 
     public function put(string $local_file, string $remote_file): bool

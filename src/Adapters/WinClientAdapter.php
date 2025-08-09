@@ -20,9 +20,9 @@ class WinClientAdapter
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
-    public function cacls(string $path): bool
+    public function cacls(string $path): mixed
     {
-        return $this->connection->mode($path) !== false;
+        return $this->connection->mode($path);
     }
 
     public function put(string $local_file, string $remote_file): bool

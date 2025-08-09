@@ -78,7 +78,8 @@ class SFtp extends AbstractClient implements ConnectionInterface
             $this->logged = ssh2_auth_pubkey_file($this->link, $user, $pass, str_replace('.pub', '', $pass));
             $method = 'certificate';
         } else {
-            $this->logged = @ssh2_auth_password($this->link, $user, $pass);
+            $this->logged = ssh2_auth_password($this->link, $user, $pass);
+            //echo "<pre>" . print_r(ssh2_publickey_list(ssh2_publickey_init($this->link)), true);
             $method = 'password';
         }
         if (!$this->isLogged()) {
