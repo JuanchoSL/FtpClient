@@ -3,20 +3,15 @@
 namespace JuanchoSL\FtpClient\Tests\Unit;
 
 use JuanchoSL\FtpClient\Engines\Ftps;
-use JuanchoSL\FtpClient\Tests\Common\FtpCredentials;
+use JuanchoSL\FtpClient\Tests\Common\FtpsCredentials;
 
 class FtpsTest extends AbstractFtp
 {
-    use FtpCredentials;
+    use FtpsCredentials;
 
     protected function getInstance()
     {
         return new Ftps();
     }
-    
-    public function setUp(): void
-    {
-        parent::setUp();
-        $this->ftp->pasive(true);
-    }
+
 }
