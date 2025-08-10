@@ -14,16 +14,16 @@ interface ConnectionInterface
      * @throws \JuanchoSL\Exceptions\DestinationUnreachableException Si no se puede conectar
      */
     public function connect(string $server, int $port): bool;
-    
+
     /**
      * Realiza un logueo con el servidor FTP
      * @param string $user Nombre de usuario para la conexión
-     * @param string $pass Contraseña de la conexión
+     * @param string $pass Contraseña para la conexión o dejar vacía para hacer una conexión anónima
      * @return boolean Resultado de la operación
      * @throws \JuanchoSL\Exceptions\UnauthorizedException Si no se puede autenticar
      */
-    public function login(string $user, #[\SensitiveParameter] string $pass): bool;
-    
+    public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool;
+
     /**
      * Cierra la conexión con el servidor FTP
      * @return boolean Resultado de la operación

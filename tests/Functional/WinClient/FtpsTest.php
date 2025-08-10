@@ -5,11 +5,11 @@ namespace JuanchoSL\FtpClient\Tests\Functional\WinClient;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use JuanchoSL\FtpClient\Enums\EnginesEnum;
 use JuanchoSL\FtpClient\Factories\EngineFactory;
-use JuanchoSL\FtpClient\Tests\Common\FtpCredentials;
+use JuanchoSL\FtpClient\Tests\Common\FtpsCredentials;
 
 class FtpsTest extends AbstractFtp
 {
-    use FtpCredentials;
+    use FtpsCredentials;
 
 
     protected function getInstance():ConnectionInterface

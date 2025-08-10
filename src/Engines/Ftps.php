@@ -29,7 +29,7 @@ class Ftps extends Ftp implements ConnectionInterface
         return $this->isConnected();
     }
 
-    public function login(string $user, #[\SensitiveParameter] string $pass): bool
+    public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool
     {
         parent::login($user, $pass);
         $this->pasive(true);

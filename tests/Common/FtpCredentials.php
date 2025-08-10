@@ -2,8 +2,6 @@
 
 namespace JuanchoSL\FtpClient\Tests\Common;
 
-use JuanchoSL\FtpClient\Engines\Ftp;
-
 trait FtpCredentials
 {
 

@@ -81,9 +81,9 @@ class WinClientAdapter
         return $this->connection->parentDir();
     }
 
-    public function dir(string $dir = '.'): array|false
+    public function dir(string $dir = '.', bool $with_dots = false): array|false
     {
-        return $this->connection->listDirContents($dir);
+        return $this->connection->listDirContents($dir, $with_dots);
     }
 
     public function dirDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false

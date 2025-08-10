@@ -14,9 +14,12 @@ class SFtp extends AbstractClient implements ConnectionInterface
 {
 
     const DEFAULT_PORT = 22;
-    
-    private $conn;
+
+    protected $conn;
     private string $last_dir = '/';
+    private ?string $private_key = null;
+    private ?string $public_key = null;
+    private string $private_key_password = '';
 
     public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
@@ -52,9 +55,22 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return $this->isConnected();
     }
 
-    public function getFingerprint(): string
+    /**
+     * Format of fingerprint, can be SSH2_FINGERPRINT_MD5 or SSH2_FINGERPRINT_SHA1 and associated with SSH2_FINGERPRINT_HEX or SSH2_FINGERPRINT_RAW
+     * @link https://www.php.net/manual/es/function.ssh2-fingerprint.php
+     * @param int $type SSH2_FINGERPRINT_MD5 or SSH2_FINGERPRINT_SHA1 constant
+     * @return string Server fingerprint
+     */
+    public function getFingerprint(int $flags): string
     {
-        $result = ssh2_fingerprint($this->link, SSH2_FINGERPRINT_MD5);
+        if (!$this->isConnected()) {
+            $exception = new DestinationUnreachableException("You needs to connect first to server");
+            $this->log($exception, 'error', [
+                'exception' => $exception,
+            ]);
+            throw $exception;
+        }
+        $result = ssh2_fingerprint($this->link, $flags);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
@@ -69,17 +85,30 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return $result;
     }
 
-    public function login(string $user, #[\SensitiveParameter] string $pass): bool
+    public function setCredentials(#[\SensitiveParameter] string $public_key, #[\SensitiveParameter] string $private_key, #[\SensitiveParameter] string $key_password = ''): static
     {
-        if (empty($pass)) {
+        $this->public_key = $public_key;
+        $this->private_key = $private_key;
+        $this->private_key_password = $key_password;
+        return $this;
+    }
+
+    public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool
+    {
+        if (isset($this->public_key, $this->private_key)) {
+            if (!empty($pass)) {
+                @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
+                $this->logged = ssh2_auth_password($this->link, $user, $pass);
+                $method = 'certificate+password';
+            } else {
+                $this->logged = ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
+                $method = 'certificate';
+            }
+        } elseif (empty($pass)) {
             $this->logged = ssh2_auth_none($this->link, $user) !== false;
             $method = 'none';
-        } elseif (is_file($pass) && file_exists($pass)) {
-            $this->logged = ssh2_auth_pubkey_file($this->link, $user, $pass, str_replace('.pub', '', $pass));
-            $method = 'certificate';
         } else {
             $this->logged = ssh2_auth_password($this->link, $user, $pass);
-            //echo "<pre>" . print_r(ssh2_publickey_list(ssh2_publickey_init($this->link)), true);
             $method = 'password';
         }
         if (!$this->isLogged()) {
@@ -107,7 +136,6 @@ class SFtp extends AbstractClient implements ConnectionInterface
 
     public function disconnect(): bool
     {
-        //$this->exec('echo "EXITING" && exit;');
         if ($this->isLogged() && ssh2_disconnect($this->conn)) {
             unset($this->conn);
             $this->logged = false;
@@ -143,24 +171,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
-    /*
-    public function exec($command)
-    {
-        if (empty($this->link) || !$this->isLogged()) {
-            return false;
-        }
-        
-        $stream = ssh2_exec($this->link, $command);
-        $stream_error = ssh2_fetch_stream($stream, SSH2_STREAM_STDERR);
-        stream_set_blocking($stream_error, true);
-        stream_set_blocking($stream, true);
-        $output = stream_get_contents($stream);
-        $error = stream_get_contents($stream_error);
-        fclose($stream);
-        fclose($stream_error);
-        return $output;
-    }
-    */
+
     public function upload(string $local_file, string $remote_file): bool
     {
         $this->checkConnection();
@@ -271,13 +282,21 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function changeDir(string $dir): bool
     {
         $this->checkConnection();
-        if (!$this->isDir($dir)) {
+        if (!$this->isDir($this->last_dir)) {
             return false;
         }
         if (substr($dir, 0, 1) === '/') {
             $this->last_dir = $dir;
         } else {
             $this->last_dir .= '/' . $dir;
+        }
+        if (substr($this->last_dir, -3) == '/..') {
+            $this->last_dir = substr($this->last_dir, 0, -3);
+            return $this->parentDir();
+            //$dirs = explode('/', $this->last_dir);
+            //$this->last_dir = implode('/', array_slice($dirs, 0, count($dirs) - 2));
+        } else if (substr($this->last_dir, -2) == '/.') {
+            $this->last_dir = substr($this->last_dir, 0, -2);
         }
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $this->last_dir]);
         return true;
@@ -286,7 +305,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function parentDir(): bool
     {
         $this->checkConnection();
-        if (substr_count($this->last_dir, '/') == 1) {
+        if (substr_count($this->last_dir, '/') == 1 && strlen($this->last_dir) < 2) {
             return false;
         }
         $last_dir = substr($this->last_dir, 0, strrpos($this->last_dir, '/'));
@@ -303,11 +322,13 @@ class SFtp extends AbstractClient implements ConnectionInterface
         return $result;
     }
 
-    public function listDirContents(string $dir = '.'): array|false
+    public function listDirContents(string $dir = '.', bool $with_dots = false): array|false
     {
         $this->checkConnection();
-        $contents = scandir($this->getWrappedPath($dir));
-        $result = ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
+        $result = $contents = @scandir($this->getWrappedPath($dir));
+        if (!$with_dots) {
+            $result = ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
+        }
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }

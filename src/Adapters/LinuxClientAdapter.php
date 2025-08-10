@@ -44,12 +44,12 @@ class LinuxClientAdapter
     {
         return $this->connection->lastModified($filepath);
     }
-    
+
     public function rm(string $path): bool
     {
         return ($this->connection->isDir($path)) ? $this->connection->deleteDir($path) : $this->connection->delete($path);
     }
-    
+
     public function mv(string $original_dir, $new_dir): bool
     {
         return $this->connection->rename($original_dir, $new_dir);
@@ -75,9 +75,9 @@ class LinuxClientAdapter
         return $this->connection->currentDir();
     }
 
-    public function ls(string $dir = '.'): array|false
+    public function ls(string $dir = '.', bool $with_dots = false): array|false
     {
-        return $this->connection->listDirContents($dir);
+        return $this->connection->listDirContents($dir, $with_dots);
     }
 
     public function lsDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false
