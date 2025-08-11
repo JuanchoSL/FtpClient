@@ -47,8 +47,11 @@
         <env name="FTPTEST_HOST" value="ftp.dlptest.com" force="true" />
         <env name="FTPTEST_USERNAME" value="dlpuser" force="true" />
         <env name="FTPTEST_PASSWORD" value="rNrKYTX9g7z3RgJRmxWuGHbeu" force="true" />
-        <env name="FTPSTEST_HOST" value="ftp.dlptest.com" force="true" />
-        <env name="FTPSTEST_USERNAME" value="dlpuser" force="true" />
-        <env name="FTPSTEST_PASSWORD" value="rNrKYTX9g7z3RgJRmxWuGHbeu" force="true" />
+        <env name="FTPSTEST_HOST" value="localhost" force="true" />
+        <env name="FTPSTEST_USERNAME" value="juan" force="true" />
+        <env name="FTPSTEST_PASSWORD" value="" force="true" />
+        <env name="SFTPTEST_HOST" value="localhost" force="true" />
+        <env name="SFTPTEST_USERNAME" value="juan" force="true" />
+        <env name="SFTPTEST_PASSWORD" value="" force="true" />
     </php>
 </phpunit>

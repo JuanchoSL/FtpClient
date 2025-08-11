@@ -123,7 +123,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
             ]);
             throw $exception;
         }
-        $this->conn = ssh2_sftp($this->link);
+        $this->conn = @ssh2_sftp($this->link);
         if ($this->conn === false) {
             $exception = new ServiceUnavailableException("Can not initialize the sftp subsystem");
             $this->log($exception, 'error', [
@@ -136,7 +136,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
 
     public function disconnect(): bool
     {
-        if ($this->isLogged() && ssh2_disconnect($this->conn)) {
+        if ($this->isLogged() && !empty($this->conn) && @ssh2_disconnect($this->conn)) {
             unset($this->conn);
             $this->logged = false;
             if ($this->isConnected() && ssh2_disconnect($this->link)) {
