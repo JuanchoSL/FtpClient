@@ -39,7 +39,7 @@ class SFtp extends AbstractClient implements ConnectionInterface
             )
         );
         $callbacks = array('disconnect' => 'my_ssh_disconnect');
-        $this->link = ssh2_connect($server, $port, null);
+        $this->link = @ssh2_connect($server, $port, null);
         $this->connected = ($this->link !== false);
         if (!$this->isConnected()) {
             $exception = new DestinationUnreachableException("Can not connect to the desired server");
@@ -98,17 +98,17 @@ class SFtp extends AbstractClient implements ConnectionInterface
         if (isset($this->public_key, $this->private_key)) {
             if (!empty($pass)) {
                 @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
-                $this->logged = ssh2_auth_password($this->link, $user, $pass);
+                $this->logged = @ssh2_auth_password($this->link, $user, $pass);
                 $method = 'certificate+password';
             } else {
-                $this->logged = ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
+                $this->logged = @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
                 $method = 'certificate';
             }
         } elseif (empty($pass)) {
-            $this->logged = ssh2_auth_none($this->link, $user) !== false;
+            $this->logged = @ssh2_auth_none($this->link, $user) !== false;
             $method = 'none';
         } else {
-            $this->logged = ssh2_auth_password($this->link, $user, $pass);
+            $this->logged = @ssh2_auth_password($this->link, $user, $pass);
             $method = 'password';
         }
         if (!$this->isLogged()) {
