@@ -53,5 +53,9 @@
         <env name="SFTPTEST_HOST" value="localhost" force="true" />
         <env name="SFTPTEST_USERNAME" value="juan" force="true" />
         <env name="SFTPTEST_PASSWORD" value="" force="true" />
+        <env name="SFTPTEST_DSA_PUBLIC" value="localhost-dsa.pub" force="true" />
+        <env name="SFTPTEST_DSA_PRIVATE" value="localhost-dsa" force="true" />
+        <env name="SFTPTEST_RSA_PUBLIC" value="localhost-rsa.pub" force="true" />
+        <env name="SFTPTEST_RSA_PRIVATE" value="localhost-rsa" force="true" />
     </php>
 </phpunit>
