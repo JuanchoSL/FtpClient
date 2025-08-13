@@ -1,35 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="vendor/autoload.php" verbose="true" colors="true" cacheResult="false" processIsolation="false">
+<phpunit bootstrap="vendor/autoload.php" verbose="true" colors="true" cacheResult="false" processIsolation="true">
     <testsuites>
         <testsuite name="All">
             <directory>./tests</directory>
             <exclude>./tests/Unit/FtpsTest.php</exclude>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
+            <exclude>./tests/Unit/SFtpDsaTest.php</exclude>
+            <exclude>./tests/Unit/SFtpRsaTest.php</exclude>
             <exclude>./tests/Functional/Client/FtpsTest.php</exclude>
             <exclude>./tests/Functional/Client/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/Client/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Functional/Client/SFtpDsaTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/FtpsTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/SFtpDsaTest.php</exclude>
             <exclude>./tests/Functional/WinClient/FtpsTest.php</exclude>
             <exclude>./tests/Functional/WinClient/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/WinClient/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Functional/WinClient/SFtpDsaTest.php</exclude>
         </testsuite>
         <testsuite name="Unit">
             <directory>./tests/Unit</directory>
             <exclude>./tests/Unit/FtpsTest.php</exclude>
             <exclude>./tests/Unit/SFtpTest.php</exclude>
+            <exclude>./tests/Unit/SFtpDsaTest.php</exclude>
+            <exclude>./tests/Unit/SFtpRsaTest.php</exclude>
         </testsuite>
         <testsuite name="Functional">
             <directory>./tests/Functional</directory>
             <exclude>./tests/Functional/Client/FtpsTest.php</exclude>
             <exclude>./tests/Functional/Client/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/Client/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Functional/Client/SFtpDsaTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/FtpsTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/SFtpDsaTest.php</exclude>
             <exclude>./tests/Functional/WinClient/FtpsTest.php</exclude>
             <exclude>./tests/Functional/WinClient/SFtpTest.php</exclude>
+            <exclude>./tests/Functional/WinClient/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Functional/WinClient/SFtpDsaTest.php</exclude>
         </testsuite>
     </testsuites>
     <php>
         <env name="FTPTEST_HOST" value="ftp.dlptest.com" force="true" />
         <env name="FTPTEST_USERNAME" value="dlpuser" force="true" />
         <env name="FTPTEST_PASSWORD" value="rNrKYTX9g7z3RgJRmxWuGHbeu" force="true" />
+        <env name="FTPSTEST_HOST" value="localhost" force="true" />
+        <env name="FTPSTEST_USERNAME" value="juan" force="true" />
+        <env name="FTPSTEST_PASSWORD" value="" force="true" />
+        <env name="SFTPTEST_HOST" value="localhost" force="true" />
+        <env name="SFTPTEST_USERNAME" value="juan" force="true" />
+        <env name="SFTPTEST_PASSWORD" value="" force="true" />
     </php>
 </phpunit>

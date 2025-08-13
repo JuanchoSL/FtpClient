@@ -41,9 +41,10 @@ interface DirectoryInterface
     /**
      * Lista el contenido de la ruta especificada
      * @param string $dir Directorio a listar
+     * @param bool $with_dots Indica si queremos incluir o no los elementos '.' y '..'
      * @return array<int,string>|false Array del contenido de la ruta especificada o false si no existe
      */
-    public function listDirContents(string $dir = '.'): array|false;
+    public function listDirContents(string $dir = '.', bool $with_dots = false): array|false;
 
     /**
      * Lista los directorios de la ruta especificada

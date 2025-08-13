@@ -81,7 +81,7 @@ abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
 
     protected function filterContents(string $dir, bool $files, bool $extended_info = false, ?string $sort = null): array|false
     {
-        $contents = $this->listDirContents($dir);
+        $contents = $this->listDirContents($dir, false);
         if ($contents !== false) {
             foreach ($contents as $index => $content) {
                 if (($files && $this->isDir($content)) || (!$files && !$this->isDir($content))) {

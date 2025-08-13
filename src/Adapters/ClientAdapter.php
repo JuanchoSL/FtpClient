@@ -20,9 +20,9 @@ class ClientAdapter implements ClientInterface
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
-    public function mode(string $path): bool
+    public function mode(string $path): mixed
     {
-        return $this->connection->mode($path) !== false;
+        return $this->connection->mode($path);
     }
 
     public function upload(string $local_file, string $remote_file): bool
@@ -94,9 +94,9 @@ class ClientAdapter implements ClientInterface
         return $this->connection->isDir($path);
     }
 
-    public function listDirContents(string $dir = '.'): array|false
+    public function listDirContents(string $dir = '.', bool $with_dots = false): array|false
     {
-        return $this->connection->listDirContents($dir);
+        return $this->connection->listDirContents($dir, $with_dots);
     }
 
     public function listDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false

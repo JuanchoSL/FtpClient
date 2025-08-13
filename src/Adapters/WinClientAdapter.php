@@ -20,9 +20,9 @@ class WinClientAdapter
         return $this->connection->chmod($path, $permissions) !== false;
     }
 
-    public function cacls(string $path): bool
+    public function cacls(string $path): mixed
     {
-        return $this->connection->mode($path) !== false;
+        return $this->connection->mode($path);
     }
 
     public function put(string $local_file, string $remote_file): bool
@@ -81,9 +81,9 @@ class WinClientAdapter
         return $this->connection->parentDir();
     }
 
-    public function dir(string $dir = '.'): array|false
+    public function dir(string $dir = '.', bool $with_dots = false): array|false
     {
-        return $this->connection->listDirContents($dir);
+        return $this->connection->listDirContents($dir, $with_dots);
     }
 
     public function dirDirs(string $dir = '.', bool $info = false, ?string $sort = null): array|false

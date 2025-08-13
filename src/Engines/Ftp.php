@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace JuanchoSL\FtpClient\Engines;
 
@@ -33,8 +31,9 @@ class Ftp extends AbstractClient implements ConnectionInterface
         return $this->isConnected();
     }
 
-    public function login(string $user, #[\SensitiveParameter] string $pass): bool
+    public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool
     {
+        $user = empty($pass) ? 'anonymous' : $user;
         $this->logged = ftp_login($this->link, $user, $pass);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $this->isLogged()]);
         if (!$this->isLogged()) {
@@ -48,7 +47,6 @@ class Ftp extends AbstractClient implements ConnectionInterface
             ]);
             throw $exception;
         }
-        $this->pasive(true);
         return $this->isLogged();
     }
 
@@ -107,7 +105,6 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function stat(string $path): array
     {
         $this->checkConnection();
-        //return ftp_mlsd($this->link, $path);
         $stat = ftp_mlsd($this->link, $path);
         $result = (empty($stat)) ? [] : current($stat);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
@@ -130,11 +127,13 @@ class Ftp extends AbstractClient implements ConnectionInterface
         return $result;
     }
 
-    public function listDirContents(string $dir = '.'): array|false
+    public function listDirContents(string $dir = '.', bool $with_dots = false): array|false
     {
         $this->checkConnection();
-        $contents = ftp_nlist($this->link, $dir);
-        $result = ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
+        $result = $contents = ftp_nlist($this->link, $dir);
+        if (!$with_dots) {
+            $result = ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
+        }
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
@@ -183,7 +182,6 @@ class Ftp extends AbstractClient implements ConnectionInterface
     {
         $this->checkConnection();
         $tempHandle = fopen('php://temp', 'r+');
-        //Get file from FTP:
         if ($tempHandle) {
             if (@ftp_fget($this->link, $tempHandle, $remote_file, FTP_ASCII, 0)) {
                 rewind($tempHandle);
