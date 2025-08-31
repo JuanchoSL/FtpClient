@@ -96,12 +96,11 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool
     {
         if (isset($this->public_key, $this->private_key)) {
-            if (!empty($pass)) {
-                @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
+            $this->logged = @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
+            if (!empty($pass) && !$this->logged) {
                 $this->logged = @ssh2_auth_password($this->link, $user, $pass);
                 $method = 'certificate+password';
             } else {
-                $this->logged = @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
                 $method = 'certificate';
             }
         } elseif (empty($pass)) {
