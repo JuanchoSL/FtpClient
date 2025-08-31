@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "869f4cd473674840b49e9c4f7f4057af",
+    "content-hash": "df5b7cae741e9ddc8ad703595ff317f5",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -61,66 +61,6 @@
                 "source": "https://github.com/php-fig/http-message-util/tree/1.1.5"
             },
             "time": "2020-11-24T22:02:12+00:00"
-        },
-        {
-            "name": "juanchosl/cryptology",
-            "version": "1.0.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/JuanchoSL/Cryptology.git",
-                "reference": "46e4d247c40a6ba42e51255e4e9c85a4cb0c889a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/JuanchoSL/Cryptology/zipball/46e4d247c40a6ba42e51255e4e9c85a4cb0c889a",
-                "reference": "46e4d247c40a6ba42e51255e4e9c85a4cb0c889a",
-                "shasum": ""
-            },
-            "require": {
-                "ext-openssl": "*",
-                "juanchosl/exceptions": "1.0.*",
-                "php": "^7.1 || ^8.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "9.6.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "JuanchoSL\\Cryptology\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Juan Sánchez Lecegui",
-                    "email": "JuanchoSL@hotmail.com",
-                    "homepage": "https://github.com/JuanchoSL/"
-                }
-            ],
-            "description": "Little encrypt/decrypt tools in order to crypt, decrypt, sign or verify messages, tests or files using distincts formats with the same way",
-            "homepage": "https://github.com/JuanchoSL/Cryptology",
-            "keywords": [
-                "PKCS1",
-                "cms",
-                "crypt",
-                "cryptology",
-                "decrypt",
-                "encrypt",
-                "gnupg",
-                "gpg",
-                "mcrypt",
-                "openssl",
-                "pkcs7",
-                "smime"
-            ],
-            "support": {
-                "source": "https://github.com/JuanchoSL/Cryptology/tree/1.0.1"
-            },
-            "time": "2025-07-29T13:24:01+00:00"
         },
         {
             "name": "juanchosl/exceptions",
