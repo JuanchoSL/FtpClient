@@ -4,7 +4,6 @@
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/JuanchoSL/FtpClient",
-    "minimum-stability": "stable",
     "keywords": [
         "ftp",
         "ftps",
@@ -23,9 +22,11 @@
         "ext-ssh2": "*"
     },
     "require": {
-        "php": "^7.2 || ^8.0",
+        "php": "^8.1",
         "psr/log": "3.0.*",
-        "juanchosl/exceptions": "1.0.*"
+        "juanchosl/exceptions": "1.0.*",
+        "juanchosl/httpdata": "1.0.*",
+        "juanchosl/cryptology": "1.0.*"
     },
     "require-dev": {
         "juanchosl/logger": "1.1.*",

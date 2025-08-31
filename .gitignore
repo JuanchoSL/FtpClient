@@ -2,6 +2,4 @@
 /logs/
 /vendor/
 .vscode
-/etc/home-ssh-server
-/etc/home-ssh-server.pub
-/tests/Common/SFtpCredentials.php
+/etc/
