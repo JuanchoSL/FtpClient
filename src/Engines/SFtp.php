@@ -182,7 +182,13 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function download(string $remote_file, string $local_file): bool
     {
         $this->checkConnection();
-        $result = ssh2_scp_recv($this->link, $this->getFullPath($remote_file), $local_file);
+        if (file_exists($local_file)) {
+            $result = ssh2_scp_recv($this->link, $this->getFullPath($remote_file), $local_file);
+        } else {
+            $data = $this->read($remote_file);
+            $result = (file_put_contents($local_file, $data) !== false);
+        }
+
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
