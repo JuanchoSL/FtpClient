@@ -41,7 +41,7 @@ abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
         }
     }
 
-    protected function logCall(string $message, array $context = []):void
+    protected function logCall(string $message, array $context = []): void
     {
         $this->log($message, 'debug', $context);
     }
@@ -84,6 +84,7 @@ abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
         $contents = $this->listDirContents($dir, false);
         if ($contents !== false) {
             foreach ($contents as $index => $content) {
+                $content = ($this instanceof Ftp) ? $content : $dir . DIRECTORY_SEPARATOR . $content;
                 if (($files && $this->isDir($content)) || (!$files && !$this->isDir($content))) {
                     unset($contents[$index]);
                 } elseif ($extended_info || !is_null($sort)) {
