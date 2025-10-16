@@ -10,11 +10,11 @@ use JuanchoSL\FtpClient\Engines\Ftp;
 use JuanchoSL\FtpClient\Engines\Ftps;
 use JuanchoSL\FtpClient\Engines\SFtp;
 use JuanchoSL\FtpClient\Enums\EnginesEnum;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareInterface;
 
 class EngineFactory
 {
-    public static function getInstance(EnginesEnum $engine): ConnectionInterface&ClientInterface&LoggerInterface
+    public static function getInstance(EnginesEnum $engine): ConnectionInterface&ClientInterface&LoggerAwareInterface
     {
         return match ($engine) {
             EnginesEnum::FTP => new Ftp(),
@@ -22,4 +22,5 @@ class EngineFactory
             EnginesEnum::SFTP => new SFtp()
         };
     }
+
 }
