@@ -23,6 +23,9 @@ class SFtp extends AbstractClient implements ConnectionInterface
 
     public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
+        $this->server = $server;
+        $this->port = $port;
+
         $this->checkExtension('ssh2');
         $methods = array(
             'kex' => 'diffie-hellman-group-exchange-sha256,diffie-hellman-group1-sha1,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha1',
@@ -95,6 +98,9 @@ class SFtp extends AbstractClient implements ConnectionInterface
 
     public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool
     {
+        $this->user = $user;
+        $this->pass = $pass;
+
         if (isset($this->public_key, $this->private_key)) {
             $this->logged = @ssh2_auth_pubkey_file($this->link, $user, $this->public_key, $this->private_key, $this->private_key_password);
             if (!empty($pass) && !$this->logged) {
@@ -354,5 +360,36 @@ class SFtp extends AbstractClient implements ConnectionInterface
             $path = str_replace('//', '/', $this->last_dir . '/' . $path);
         }
         return $path;
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'server' => $this->server,
+            'port' => $this->port,
+            'user' => $this->user,
+            'pass' => $this->pass,
+            'public' => $this->public_key,
+            'private' => $this->private_key,
+            'private_pass' => $this->private_key_password,
+        ];
+    }
+
+    public function __unserialize(array $con_data): void
+    {
+        $this->connect($con_data['server'], $con_data['port']);
+        if (!empty($con_data['public']) && !empty($con_data['private'])) {
+            $this->setCredentials($con_data['public'], $con_data['private'], $con_data['private_pass']);
+        }
+        $this->login($con_data['user'], $con_data['pass']);
+    }
+
+    public function __debugInfo(): array
+    {
+        $data = $this->__serialize();
+        $data['pass'] = '*****';
+        $data['private'] = '*****';
+        $data['private_pass'] = '*****';
+        return $data;
     }
 }

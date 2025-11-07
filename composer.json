@@ -12,8 +12,9 @@
     "authors": [
         {
             "name": "Juan Sánchez Lecegui",
-            "email": "JuanchoSL@hotmail.com",
-            "homepage": "https://github.com/JuanchoSL/"
+            "email": "Juan.Sanchez@tecnicosweb.com",
+            "homepage": "https://www.linkedin.com/in/juansanchezlecegui/",
+            "role": "Developer"
         }
     ],
     "suggest": {
@@ -22,7 +23,7 @@
         "ext-ssh2": "*"
     },
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "psr/log": "3.0.*",
         "juanchosl/exceptions": "1.0.*",
         "juanchosl/httpdata": "1.0.*"
