@@ -12,6 +12,9 @@ class Ftps extends Ftp implements ConnectionInterface
 
     public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
+        $this->server = $server;
+        $this->port = $port;
+
         $this->checkExtension('ftp', 'openssl');
         $this->link = ftp_ssl_connect($server, $port);
         $this->connected = ($this->link !== false);

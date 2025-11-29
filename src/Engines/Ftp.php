@@ -14,6 +14,9 @@ class Ftp extends AbstractClient implements ConnectionInterface
 
     public function connect(string $server, int $port = self::DEFAULT_PORT): bool
     {
+        $this->server = $server;
+        $this->port = $port;
+
         $this->checkExtension('ftp');
         $this->link = ftp_connect($server, $port);
         $this->connected = ($this->link !== false);
@@ -33,6 +36,9 @@ class Ftp extends AbstractClient implements ConnectionInterface
 
     public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool
     {
+        $this->user = $user;
+        $this->pass = $pass;
+
         $user = empty($pass) ? 'anonymous' : $user;
         $this->logged = ftp_login($this->link, $user, $pass);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $this->isLogged()]);

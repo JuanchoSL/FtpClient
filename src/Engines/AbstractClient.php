@@ -7,10 +7,11 @@ namespace JuanchoSL\FtpClient\Engines;
 use JuanchoSL\Exceptions\PreconditionRequiredException;
 use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ClientInterface;
+use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
-abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
+abstract class AbstractClient implements ConnectionInterface, ClientInterface, LoggerAwareInterface
 {
 
     use LoggerAwareTrait;
@@ -19,6 +20,10 @@ abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
     protected bool $logged = false;
 
     protected bool $debug = false;
+    protected string $server;
+    protected int $port;
+    protected string $user;
+    protected string $pass;
 
     public function setDebug(bool $debug = false): static
     {
@@ -122,10 +127,35 @@ abstract class AbstractClient implements ClientInterface, LoggerAwareInterface
         return $this->filterContents($dir, false, $info, $sort);
     }
 
+    abstract public function connect(string $host, int $port = self::DEFAULT_PORT): bool;
+    abstract public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool;
     abstract public function disconnect(): bool;
 
     function __destruct()
     {
         $this->disconnect();
+    }
+
+    public function __serialize(): array
+    {
+        return [
+            'server' => $this->server,
+            'port' => $this->port,
+            'user' => $this->user,
+            'pass' => $this->pass,
+        ];
+    }
+
+    public function __unserialize(array $con_data): void
+    {
+        $this->connect($con_data['server'], $con_data['port']);
+        $this->login($con_data['user'], $con_data['pass']);
+    }
+
+    public function __debugInfo(): array
+    {
+        $data = $this->__serialize();
+        $data['pass'] = '*****';
+        return $data;
     }
 }
