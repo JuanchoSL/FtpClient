@@ -98,17 +98,28 @@ abstract class AbstractFtp extends TestCase
         $this->assertEquals(date('Y-m-d'), $date->format("Y-m-d"), "Date from last modified is the today date");
     }
 
+    public function testStatFile()
+    {
+        $this->assertTrue($this->ftp->changeDir($this->my_dir), "Change to the selected dir");
+        $stat = $this->ftp->stat($this->my_file_name);
+        $this->assertIsArray($stat, "Check than stat is an array");
+        $this->assertArrayHasKey("name", $stat, "Stat have name");
+        $this->assertArrayHasKey("modify", $stat, "Stat have last modified time");
+        //$this->assertArrayHasKey("size", $stat, "Stat have size");
+    }
+
     public function testRenameFile()
     {
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "Change to the desired dir");
-        $new_file_name = $this->my_file_name . ".old";
+        $new_file_name = $this->my_file_name . "." . md5(get_called_class()) . ".old";
         $this->assertTrue($this->ftp->rename($this->my_file_name, $new_file_name), "Rename the file");
     }
 
     public function testDownloadFile()
     {
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "change to the desired file");
-        $new_file_name = $this->my_file_name . ".old";
+        $new_file_name = $this->my_file_name . "." . md5(get_called_class()) . ".old";
+        //$new_file_name = $this->my_file_name . ".old";
         $this->assertTrue($this->ftp->download($new_file_name, $this->my_file_path . DIRECTORY_SEPARATOR . $new_file_name), "Download the file");
     }
 
@@ -125,8 +136,8 @@ abstract class AbstractFtp extends TestCase
     public function testDeleteFile()
     {
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "change to the desired dir");
-        $this->assertTrue($this->ftp->delete($this->my_file_name . ".old"), "Delete the file");
-        $this->assertTrue(unlink($this->my_file_path . DIRECTORY_SEPARATOR . $this->my_file_name . ".old"), "Delete local file");
+        $this->assertTrue($this->ftp->delete($this->my_file_name . "." . md5(get_called_class()) . ".old"), "Delete the file");
+        $this->assertTrue(unlink($this->my_file_path . DIRECTORY_SEPARATOR . $this->my_file_name . "." . md5(get_called_class()) . ".old"), "Delete local file");
         $this->assertTrue(empty($this->ftp->listDirContents()), "The dir is empty");
     }
 
