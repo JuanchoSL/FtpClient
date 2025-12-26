@@ -181,11 +181,12 @@ class SFtp extends AbstractClient implements ConnectionInterface
         $results = [];
         foreach ($paths as $path) {
             //$this->logCall("stating {url}", ['url' => $request . DIRECTORY_SEPARATOR . $path]);
-            $res = @ssh2_sftp_stat($this->conn, $this->getFullPath($basedir . '/' . $path));
+            $full_path = str_replace('//', '/', $basedir . '/' . $path);
+            $res = @ssh2_sftp_stat($this->conn, $this->getFullPath($full_path));
             if ($res === false) {
                 continue;
             }
-            $size = $this->isDir($basedir . '/' . $path) ? 'sizd' : 'size';
+            $size = $this->isDir($full_path) ? 'sizd' : 'size';
             $result = [
                 'name' => $path,
                 $size => $res['size'],
@@ -193,14 +194,14 @@ class SFtp extends AbstractClient implements ConnectionInterface
                 'UNIX.mode' => substr(decoct($res['mode']), -4),
                 'UNIX.uid' => $res['uid'] ?? $res['UNIX.uid'] ?? '',
                 'UNIX.gid' => $res['gid'] ?? $res['UNIX.gid'] ?? '',
-                'modify' => date("YmdHis", $res['mtime'])
+                'modify' => !array_key_exists('mtime', $res) ? '' : date("YmdHis", $res['mtime'])
             ];
             if ($path == '.') {
                 $result['type'] = 'cdir';
             } elseif ($path == '..') {
                 $result['type'] = 'pdir';
             } else {
-                $result['type'] = $this->isDir($basedir . '/' . $path) ? 'dir' : 'file';
+                $result['type'] = $this->isDir($full_path) ? 'dir' : 'file';
             }
             $results[] = $result;
         }
