@@ -174,18 +174,43 @@ abstract class AbstractClient implements ConnectionInterface, ClientInterface, L
                 unset($result[$index]);
                 continue;
             }
-            $string = new StringsManipulators($data);
             preg_match('/^(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\d+)\s+(.{12})\s(.+)$/m', $data, $matches);
             $tmp = [
                 'type' => '',
-                'sizd' => $matches[5],//(string) $string->substring(30, 43)->trim(),
                 'modify' => (new DateManipulators())->fromString($matches[6])->format("YmdHis"),
-                'UNIX.mode' => '',
+                'UNIX.mode' => '0',
                 'UNIX.uid' => $matches[3],//(string) $string->substring(17, 21)->trim(),
                 'UNIX.gid' => $matches[4],//(string) $string->substring(21, 30)->trim(),
                 'unique' => '',
                 'name' => $matches[7],//(string) $string->substring(57)->trim(),
             ];
+
+            $string = new StringsManipulators($matches[1]);
+
+            $umode = $string->substring(1);
+            $modes = explode(' ', (string) $umode->chunk(3, ' ')->trim());
+            foreach ($modes as $mode) {
+                $n = 0;
+                foreach (str_split($mode) as $char) {
+                    switch ($char) {
+                        case '':
+                        case '-':
+                            $n += 0;
+                            break;
+                        case 'r':
+                            $n += 4;
+                            break;
+                        case 'w':
+                            $n += 2;
+                            break;
+                        case 'x':
+                            $n += 1;
+                            break;
+                    }
+                }
+                $tmp['UNIX.mode'] .= "$n";
+            }
+
             if ($tmp['name'] == '.') {
                 $tmp['type'] = 'cdir';
             } elseif ($tmp['name'] == '..') {
@@ -195,6 +220,9 @@ abstract class AbstractClient implements ConnectionInterface, ClientInterface, L
             } else {
                 $tmp['type'] = 'file';
             }
+
+            $size = ($tmp['type'] == 'file') ? "size" : "sizd";
+            $tmp[$size] = $matches[5];
 
             $result[$index] = $tmp;
         }

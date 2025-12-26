@@ -111,23 +111,34 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function stat(string $path): array
     {
         $this->checkConnection();
-        $stat = ftp_mlsd($this->link, $path);
-        if (empty($stat)) {
-            $stat = ftp_rawlist($this->link, $path);
-            $stat = $this->formatDataCommanLine($stat);
+        $results = ftp_mlsd($this->link, $path);
+        if (empty($results)) {
+            $results = ftp_rawlist($this->link, $path);
+            $results = $this->formatDataCommanLine($results);
         }
+        if (is_iterable($results)) {
+            foreach ($results as $result) {
+                if (basename($result['name']) == basename($path) && $result['type'] == 'file') {
+                    $results = $result;
+                    break;
+                }
+            }
+        }
+
+        /*
         if (empty($stat)) {
             $result = [];
         } else {
-            if (count($stat) == 1) {
+            if (false && count($stat) == 1) {
                 $result = current($stat);
             } else {
                 $result = $stat;
             }
         }
+        */
         //$result = (empty($stat)) ? [] : current($stat);
-        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
-        return $result;
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $results]);
+        return empty($results) ? [] : $results;
     }
 
     public function isDir(string $path): bool

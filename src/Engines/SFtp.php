@@ -172,19 +172,20 @@ class SFtp extends AbstractClient implements ConnectionInterface
     {
         $this->checkConnection();
         if ($this->isDir($request)) {
-            $paths = $this->listDirContents($request, true);
+            $paths = $this->listDirContents($request, false);
+            $basedir = $request;
         } else {
             $paths = [basename($request)];
-            $request = dirname($request);
+            $basedir = dirname($request);
         }
         $results = [];
         foreach ($paths as $path) {
             //$this->logCall("stating {url}", ['url' => $request . DIRECTORY_SEPARATOR . $path]);
-            $res = @ssh2_sftp_stat($this->conn, $this->getFullPath($request . '/' . $path));
+            $res = @ssh2_sftp_stat($this->conn, $this->getFullPath($basedir . '/' . $path));
             if ($res === false) {
                 continue;
             }
-            $size = $this->isDir($request . '/' . $path) ? 'sizd' : 'size';
+            $size = $this->isDir($basedir . '/' . $path) ? 'sizd' : 'size';
             $result = [
                 'name' => $path,
                 $size => $res['size'],
@@ -199,13 +200,23 @@ class SFtp extends AbstractClient implements ConnectionInterface
             } elseif ($path == '..') {
                 $result['type'] = 'pdir';
             } else {
-                $result['type'] = $this->isDir($request . '/' . $path) ? 'dir' : 'file';
+                $result['type'] = $this->isDir($basedir . '/' . $path) ? 'dir' : 'file';
             }
             $results[] = $result;
         }
+        if (is_iterable($results)) {
+            foreach ($results as $result) {
+                if ($result['name'] == basename($request) && $result['type'] == 'file') {
+                    $results = $result;
+                    break;
+                }
+            }
+        }
+        /*
         if (count($results) == 1) {
             $results = current($results);
         }
+        */
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $results]);
         return $results;
     }
