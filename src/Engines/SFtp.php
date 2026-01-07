@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace JuanchoSL\FtpClient\Engines;
 
@@ -164,17 +162,64 @@ class SFtp extends AbstractClient implements ConnectionInterface
     public function mode(string $path): string
     {
         $this->checkConnection();
-        $result = substr(decoct($this->stat($path)['mode']), -4);
+        //$result = substr(decoct($this->stat($path)['mode']), -4);
+        $result = $this->stat($path)['UNIX.mode'];
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
 
-    public function stat(string $path): array
+    public function stat(string $request): array
     {
         $this->checkConnection();
-        $result = ssh2_sftp_stat($this->conn, $this->getFullPath($path));
-        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
-        return $result;
+        if ($this->isDir($request)) {
+            $paths = $this->listDirContents($request, false);
+            $basedir = $request;
+        } else {
+            $paths = [basename($request)];
+            $basedir = dirname($request);
+        }
+        $results = [];
+        foreach ($paths as $path) {
+            //$this->logCall("stating {url}", ['url' => $request . DIRECTORY_SEPARATOR . $path]);
+            $full_path = str_replace('//', '/', $basedir . '/' . $path);
+            $res = @ssh2_sftp_stat($this->conn, $this->getFullPath($full_path));
+            if ($res === false) {
+                continue;
+            }
+            $size = $this->isDir($full_path) ? 'sizd' : 'size';
+            $result = [
+                'name' => $path,
+                $size => $res['size'],
+                'unique' => '',
+                'UNIX.mode' => substr(decoct($res['mode']), -4),
+                'UNIX.uid' => $res['uid'] ?? $res['UNIX.uid'] ?? '',
+                'UNIX.gid' => $res['gid'] ?? $res['UNIX.gid'] ?? '',
+                'modify' => !array_key_exists('mtime', $res) ? '' : date("YmdHis", $res['mtime'])
+            ];
+            if ($path == '.') {
+                $result['type'] = 'cdir';
+            } elseif ($path == '..') {
+                $result['type'] = 'pdir';
+            } else {
+                $result['type'] = $this->isDir($full_path) ? 'dir' : 'file';
+            }
+            $results[] = $result;
+        }
+        if (is_iterable($results)) {
+            foreach ($results as $result) {
+                if ($result['name'] == basename($request) && $result['type'] == 'file') {
+                    $results = $result;
+                    break;
+                }
+            }
+        }
+        /*
+        if (count($results) == 1) {
+            $results = current($results);
+        }
+        */
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $results]);
+        return $results;
     }
 
     public function upload(string $local_file, string $remote_file): bool

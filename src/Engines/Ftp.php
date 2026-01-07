@@ -111,10 +111,34 @@ class Ftp extends AbstractClient implements ConnectionInterface
     public function stat(string $path): array
     {
         $this->checkConnection();
-        $stat = ftp_mlsd($this->link, $path);
-        $result = (empty($stat)) ? [] : current($stat);
-        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
-        return $result;
+        $results = ftp_mlsd($this->link, $path);
+        if (empty($results)) {
+            $results = ftp_rawlist($this->link, $path);
+            $results = $this->formatDataCommanLine($results);
+        }
+        if (is_iterable($results)) {
+            foreach ($results as $result) {
+                if (basename($result['name']) == basename($path) && $result['type'] == 'file') {
+                    $results = $result;
+                    break;
+                }
+            }
+        }
+
+        /*
+        if (empty($stat)) {
+            $result = [];
+        } else {
+            if (false && count($stat) == 1) {
+                $result = current($stat);
+            } else {
+                $result = $stat;
+            }
+        }
+        */
+        //$result = (empty($stat)) ? [] : current($stat);
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $results]);
+        return empty($results) ? [] : $results;
     }
 
     public function isDir(string $path): bool
@@ -137,6 +161,14 @@ class Ftp extends AbstractClient implements ConnectionInterface
     {
         $this->checkConnection();
         $result = $contents = ftp_nlist($this->link, $dir);
+        if (empty($result)) {
+            $result = $this->stat($dir);
+            if (is_array($result) && !empty($result)) {
+                if (is_array(current($result)) && array_key_exists('name', current($result))) {
+                    $result = array_column($result, 'name');
+                }
+            }
+        }
         if (!$with_dots) {
             $result = ($contents !== false) ? array_values(array_diff($contents, array('..', '.'))) : false;
         }
