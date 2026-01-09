@@ -4,10 +4,13 @@
     "type": "library",
     "license": "MIT",
     "homepage": "https://github.com/JuanchoSL/FtpClient",
+    "minimum-stability": "dev",
     "keywords": [
         "ftp",
         "ftps",
-        "sftp"
+        "sftp",
+        "file transfer",
+        "file server"
     ],
     "authors": [
         {
@@ -20,18 +23,23 @@
     "suggest": {
         "ext-ftp": "*",
         "ext-openssl": "*",
-        "ext-ssh2": "*"
+        "ext-ssh2": "*",
+        "ext-sockets": "*"
     },
     "require": {
         "php": "^8.1",
         "psr/log": "3.0.*",
         "juanchosl/exceptions": "1.0.*",
-        "juanchosl/httpdata": "1.0.*"
+        "juanchosl/validators": "1.0.*",
+        "juanchosl/datamanipulation": "^1.0",
+        "juanchosl/socketclient": "1.0.*@dev",
+        "juanchosl/curlclient": "^1.0",
+        "juanchosl/httpdata": "^1.0"
     },
     "require-dev": {
         "juanchosl/logger": "1.1.*",
         "phpstan/phpstan": "1.12.*",
-        "phpunit/phpunit": "9.6.*"
+        "phpunit/phpunit": "10.5.*"
     },
     "autoload": {
         "psr-4": {
