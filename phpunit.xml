@@ -3,22 +3,35 @@
     <testsuites>
         <testsuite name="All">
             <directory>./tests</directory>
-            <exclude>./tests/Unit/Native/SFtpAgentTest.php</exclude>
-            <exclude>./tests/Unit/Native/FtpTest.php</exclude>
             <exclude>./tests/Unit/Native/FtpsTest.php</exclude>
             <exclude>./tests/Unit/Native/SFtpTest.php</exclude>
+            <exclude>./tests/Unit/Native/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Unit/Native/SFtpDsaTest.php</exclude>
+            <exclude>./tests/Unit/Native/SFtpAgentTest.php</exclude>
+
             <exclude>./tests/Unit/Curl/FtpTest.php</exclude>
             <exclude>./tests/Unit/Curl/FtpsTest.php</exclude>
             <exclude>./tests/Unit/Curl/SFtpTest.php</exclude>
+            <exclude>./tests/Unit/Curl/SFtpRsaTest.php</exclude>
+            <exclude>./tests/Unit/Curl/SFtpDsaTest.php</exclude>
+
             <exclude>./tests/Unit/Sockets/FtpTest.php</exclude>
             <exclude>./tests/Unit/Sockets/FtpsTest.php</exclude>
+
+            <exclude>./tests/Functional/Client/FtpTest.php</exclude>
             <exclude>./tests/Functional/Client/FtpsTest.php</exclude>
             <exclude>./tests/Functional/Client/SFtpTest.php</exclude>
             <exclude>./tests/Functional/Client/SFtpRsaTest.php</exclude>
             <exclude>./tests/Functional/Client/SFtpDsaTest.php</exclude>
+
+            <exclude>./tests/Functional/LinuxClient/FtpTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/FtpsTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/SFtpTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/SFtpRsaTest.php</exclude>
             <exclude>./tests/Functional/LinuxClient/SFtpDsaTest.php</exclude>
+
+            <exclude>./tests/Functional/LinuxClient/FtpTest.php</exclude>
+            <exclude>./tests/Functional/LinuxClient/FtpsTest.php</exclude>
             <exclude>./tests/Functional/WinClient/SFtpTest.php</exclude>
             <exclude>./tests/Functional/WinClient/SFtpRsaTest.php</exclude>
             <exclude>./tests/Functional/WinClient/SFtpDsaTest.php</exclude>

@@ -41,4 +41,4 @@ jobs:
 
     - name: Run test suite
       #run: vendor/bin/phpunit --configuration phpunit.xml --exclude 'SFtpTest' --exclude 'FtpsTest'
-      run: vendor/bin/phpunit --configuration phpunit.xml --filter 'FtpsTest'
+      run: vendor/bin/phpunit --configuration phpunit.xml --filter 'FtpTest'
