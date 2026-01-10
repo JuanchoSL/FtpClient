@@ -487,7 +487,9 @@ class SocketFtp extends AbstractClient implements ConnectionInterface, FilesInte
     {
         $ip ??= $this->server;
         $data_channel = (new SocketClientFactory)->createFromUrl("tcp://{$ip}:{$port}");
-        $data_channel->setLogger($this->logger);
+        if (!is_null($this->logger)) {
+            $data_channel->setLogger($this->logger);
+        }
         $data_channel->connect();
         return $data_channel;
     }

@@ -36,7 +36,9 @@ class SocketFtps extends SocketFtp implements ConnectionInterface, FilesInterfac
         $proto = "ssl";//(!$this->isConnected() || !$this->isLogged() || $this->elevated) ? 'ssl' : 'tcp';
         $ip ??= $this->server;
         $data_channel = (new SocketClientFactory())->createFromUrl("{$proto}://{$ip}:{$port}");
-        $data_channel->setLogger($this->logger);
+        if (!is_null($this->logger)) {
+            $data_channel->setLogger($this->logger);
+        }
         $data_channel->connect();
         return $data_channel;
     }

@@ -2,6 +2,9 @@
 
 namespace JuanchoSL\FtpClient\Tests\Unit;
 
+use JuanchoSL\Logger\Composers\TextComposer;
+use JuanchoSL\Logger\Logger;
+use JuanchoSL\Logger\Repositories\FileRepository;
 use PHPUnit\Framework\TestCase;
 
 abstract class AbstractFtp extends TestCase
@@ -18,15 +21,26 @@ abstract class AbstractFtp extends TestCase
     abstract protected function getUser();
     abstract protected function getPass();
 
+    protected function getDirName(): string
+    {
+        return md5("juancho-test-" . date('Y-m-d') . '-unit-' . get_called_class());
+    }
     public function setUp(): void
     {
+        date_default_timezone_set("Europe/Madrid");
         $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']);
-        $this->my_dir = "juancho-test-" . date('Y-m-d') . '-unit';
+        $this->my_dir = $this->getDirName();
 
         $this->ftp = $this->getInstance();
+        //$logger = new Logger((new FileRepository(dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'socket.log'))->setComposer(new TextComposer()));
+        //$this->ftp->setLogger($logger);
+        //$this->ftp->setDebug(true);
         $connect = $this->ftp->connect($this->getHost(), $this->getPort());
         $this->assertTrue($connect, "Check conection");
         $login = $this->ftp->login($this->getUser(), $this->getPass());
+        if (method_exists($this->ftp, 'pasive')) {
+            $this->ftp->pasive(true);
+        }
         $this->assertTrue($login, "check login");
     }
     public function tearDown(): void
@@ -67,7 +81,7 @@ abstract class AbstractFtp extends TestCase
         $this->assertTrue($this->ftp->changeDir($this->my_dir), "Change dir successfull");
         $this->assertTrue($this->ftp->upload($this->my_file_path . DIRECTORY_SEPARATOR . $this->my_file_name, $this->my_file_name), "Upload file");
         $this->assertContains($this->my_file_name, $this->ftp->listFiles(), "The file is into directory");
-        //$this->assertFalse(empty($this->ftp->listDirContents($this->my_dir)));
+        //$this->assertFalse(empty($this->ftp->listDirContents('.')));
     }
     public function testRead()
     {
