@@ -67,6 +67,7 @@ class Ftp extends AbstractClient implements ConnectionInterface, FilesInterface,
     {
         $this->checkConnection();
         //ftp_set_option($this->link, FTP_USEPASVADDRESS, $estado);
+        ftp_set_option($this->link, FTP_USEPASVADDRESS, false);
         $result = ftp_pasv($this->link, $estado);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
