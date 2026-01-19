@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "00ffd615aa43d8b2724607710feb7692",
+    "content-hash": "58d575f91a7ca769a6800e339b92dbe2",
     "packages": [
         {
             "name": "fig/http-message-util",
@@ -203,22 +203,24 @@
         },
         {
             "name": "juanchosl/datatransfer",
-            "version": "1.0.13",
+            "version": "1.0.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JuanchoSL/DataTransfer.git",
-                "reference": "eb67c798532b2bd1d895740f5861be7e8235a2e0"
+                "reference": "e8a3f617faec70dce4ef01e2eb67425bd923c427"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JuanchoSL/DataTransfer/zipball/eb67c798532b2bd1d895740f5861be7e8235a2e0",
-                "reference": "eb67c798532b2bd1d895740f5861be7e8235a2e0",
+                "url": "https://api.github.com/repos/JuanchoSL/DataTransfer/zipball/e8a3f617faec70dce4ef01e2eb67425bd923c427",
+                "reference": "e8a3f617faec70dce4ef01e2eb67425bd923c427",
                 "shasum": ""
             },
             "require": {
                 "composer-runtime-api": "^2.2",
                 "ext-json": "*",
                 "ext-mbstring": "*",
+                "ext-xml": "*",
+                "ext-zip": "*",
                 "juanchosl/exceptions": "1.0.*",
                 "juanchosl/httpheaders": "1.0.*",
                 "juanchosl/validators": "1.0.*",
@@ -257,6 +259,7 @@
                 "array",
                 "csv",
                 "data converter",
+                "data sheets",
                 "data transfer objects",
                 "dto",
                 "entity",
@@ -264,6 +267,7 @@
                 "ini",
                 "json",
                 "object",
+                "ods",
                 "simplexmlelement",
                 "tab separated values",
                 "tsv",
@@ -273,9 +277,9 @@
                 "yaml"
             ],
             "support": {
-                "source": "https://github.com/JuanchoSL/DataTransfer/tree/1.0.13"
+                "source": "https://github.com/JuanchoSL/DataTransfer/tree/1.0.14"
             },
-            "time": "2025-11-28T21:12:15+00:00"
+            "time": "2026-01-14T16:28:39+00:00"
         },
         {
             "name": "juanchosl/exceptions",
@@ -568,16 +572,16 @@
         },
         {
             "name": "juanchosl/socketclient",
-            "version": "1.0.x-dev",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JuanchoSL/SocketClient.git",
-                "reference": "b0cdbf3d81a91a92783b03dadcb6befb682c1755"
+                "reference": "82331959a2ec4ff996948e778bfd4c99a610515f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JuanchoSL/SocketClient/zipball/b0cdbf3d81a91a92783b03dadcb6befb682c1755",
-                "reference": "b0cdbf3d81a91a92783b03dadcb6befb682c1755",
+                "url": "https://api.github.com/repos/JuanchoSL/SocketClient/zipball/82331959a2ec4ff996948e778bfd4c99a610515f",
+                "reference": "82331959a2ec4ff996948e778bfd4c99a610515f",
                 "shasum": ""
             },
             "require": {
@@ -593,7 +597,6 @@
                 "phpstan/phpstan": "1.12.*",
                 "phpunit/phpunit": "9.6.*"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -622,9 +625,9 @@
                 "udp"
             ],
             "support": {
-                "source": "https://github.com/JuanchoSL/SocketClient/tree/1.0"
+                "source": "https://github.com/JuanchoSL/SocketClient/tree/1.0.0"
             },
-            "time": "2026-01-09T23:47:39+00:00"
+            "time": "2026-01-19T09:55:04+00:00"
         },
         {
             "name": "juanchosl/validators",
@@ -2786,9 +2789,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "juanchosl/socketclient": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

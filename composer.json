@@ -32,8 +32,8 @@
         "juanchosl/exceptions": "1.0.*",
         "juanchosl/validators": "1.0.*",
         "juanchosl/datamanipulation": "^1.0",
-        "juanchosl/socketclient": "1.0.*@dev",
-        "juanchosl/curlclient": "^1.0",
+        "juanchosl/socketclient": "1.0.*",
+        "juanchosl/curlclient": "1.0.*",
         "juanchosl/httpdata": "^1.0"
     },
     "require-dev": {
