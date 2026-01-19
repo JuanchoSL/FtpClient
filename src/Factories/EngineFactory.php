@@ -1,15 +1,15 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace JuanchoSL\FtpClient\Factories;
 
 use JuanchoSL\FtpClient\Contracts\ClientInterface;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
-use JuanchoSL\FtpClient\Engines\Ftp;
-use JuanchoSL\FtpClient\Engines\Ftps;
-use JuanchoSL\FtpClient\Engines\SFtp;
+use JuanchoSL\FtpClient\Engines\Native\Ftp;
+use JuanchoSL\FtpClient\Engines\Native\Ftps;
+use JuanchoSL\FtpClient\Engines\Native\SFtp;
 use JuanchoSL\FtpClient\Enums\EnginesEnum;
+use JuanchoSL\HttpData\Factories\UriFactory;
+use Psr\Http\Message\UriInterface;
 use Psr\Log\LoggerAwareInterface;
 
 class EngineFactory

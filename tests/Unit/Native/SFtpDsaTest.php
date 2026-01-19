@@ -1,9 +1,10 @@
 <?php
 
-namespace JuanchoSL\FtpClient\Tests\Unit;
+namespace JuanchoSL\FtpClient\Tests\Unit\Native;
 
-use JuanchoSL\FtpClient\Engines\SFtp;
+use JuanchoSL\FtpClient\Engines\Native\SFtp;
 use JuanchoSL\FtpClient\Tests\Common\SSH2DsaCredentials;
+use JuanchoSL\FtpClient\Tests\Unit\AbstractFtp;
 
 class SFtpDsaTest extends AbstractFtp
 {
@@ -16,8 +17,8 @@ class SFtpDsaTest extends AbstractFtp
 
     public function setUp(): void
     {
-        $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 2), 'etc']);
-        $this->my_dir = "juancho-test-" . date('Y-m-d') . '-unit';
+        $this->my_file_path = implode(DIRECTORY_SEPARATOR, [dirname(__DIR__, 3), 'etc']);
+        $this->my_dir = $this->getDirName();
 
         $this->ftp = $this->getInstance();
         $connect = $this->ftp->connect($this->getHost(), $this->getPort());

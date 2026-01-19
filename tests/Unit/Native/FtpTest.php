@@ -1,9 +1,10 @@
 <?php
 
-namespace JuanchoSL\FtpClient\Tests\Unit;
+namespace JuanchoSL\FtpClient\Tests\Unit\Native;
 
-use JuanchoSL\FtpClient\Engines\Ftp;
+use JuanchoSL\FtpClient\Engines\Native\Ftp;
 use JuanchoSL\FtpClient\Tests\Common\FtpCredentials;
+use JuanchoSL\FtpClient\Tests\Unit\AbstractFtp;
 
 class FtpTest extends AbstractFtp
 {

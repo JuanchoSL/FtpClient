@@ -8,6 +8,7 @@ use JuanchoSL\Exceptions\PreconditionRequiredException;
 use JuanchoSL\Exceptions\UnauthorizedException;
 use JuanchoSL\FtpClient\Contracts\ClientInterface;
 use JuanchoSL\FtpClient\Contracts\ConnectionInterface;
+use JuanchoSL\FtpClient\Engines\Native\Ftp;
 use Psr\Log\LoggerAwareInterface;
 use Psr\Log\LoggerAwareTrait;
 
@@ -135,13 +136,33 @@ abstract class AbstractClient implements ConnectionInterface, ClientInterface, L
         return $this->filterContents($dir, false, $info, $sort);
     }
 
+    public function mode(string $path): string
+    {
+        $this->checkConnection();
+        $result = $this->stat($path)['UNIX.mode'] ?? '----';
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
+    }
+
+    public function isDir(string $path): bool
+    {
+        /*$filesize = $this->filesize($path);
+        $result = '';*/
+        $result = $this->stat($path)['type'] !== 'file';
+        $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
+        return $result;
+    }
+
     abstract public function connect(string $host, int $port = self::DEFAULT_PORT): bool;
     abstract public function login(string $user, #[\SensitiveParameter] string $pass = ''): bool;
     abstract public function disconnect(): bool;
+    abstract public function stat(string $path): array;
 
     function __destruct()
     {
-        $this->disconnect();
+        if ($this->isConnected()) {
+            $this->disconnect();
+        }
     }
 
     public function __serialize(): array
@@ -175,14 +196,19 @@ abstract class AbstractClient implements ConnectionInterface, ClientInterface, L
                 continue;
             }
             preg_match('/^(\S+)\s+(\d+)\s+(\S+)\s+(\S+)\s+(\d+)\s+(.{12})\s(.+)$/m', $data, $matches);
+            if (empty($matches)) {
+                unset($result[$index]);
+                continue;
+            }
+
             $tmp = [
                 'type' => '',
-                'modify' => (new DateManipulators())->fromString($matches[6])->format("YmdHis"),
+                'modify' => (!empty($matches[6])) ? (new DateManipulators())->fromString($matches[6])->format("YmdHis") : '',
                 'UNIX.mode' => '0',
-                'UNIX.uid' => $matches[3],//(string) $string->substring(17, 21)->trim(),
-                'UNIX.gid' => $matches[4],//(string) $string->substring(21, 30)->trim(),
+                'UNIX.uid' => $matches[3] ?? '',//(string) $string->substring(17, 21)->trim(),
+                'UNIX.gid' => $matches[4] ?? '',//(string) $string->substring(21, 30)->trim(),
                 'unique' => '',
-                'name' => $matches[7],//(string) $string->substring(57)->trim(),
+                'name' => $matches[7] ?? '',//(string) $string->substring(57)->trim(),
             ];
 
             $string = new StringsManipulators($matches[1]);
