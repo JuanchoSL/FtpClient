@@ -103,13 +103,14 @@ class Ftp extends AbstractClient implements ConnectionInterface, FilesInterface,
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
-    
+
     public function stat(string $path): array
     {
         $this->checkConnection();
         $results = ftp_mlsd($this->link, $path);
         if (empty($results)) {
             $results = ftp_rawlist($this->link, $path);
+            $results = !is_iterable($results) ? [$results] : $results;
             $results = $this->formatDataCommanLine($results);
         }
         if (is_iterable($results)) {
@@ -170,7 +171,7 @@ class Ftp extends AbstractClient implements ConnectionInterface, FilesInterface,
     public function createDir(string $dir_name): bool
     {
         $this->checkConnection();
-        $result = ftp_mkdir($this->link, $dir_name) !== false;
+        $result = @ftp_mkdir($this->link, $dir_name) !== false;
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
@@ -236,7 +237,7 @@ class Ftp extends AbstractClient implements ConnectionInterface, FilesInterface,
     public function rename(string $old_name, string $new_name): bool
     {
         $this->checkConnection();
-        $result = ftp_rename($this->link, $old_name, $new_name);
+        $result = @ftp_rename($this->link, $old_name, $new_name);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
@@ -244,7 +245,7 @@ class Ftp extends AbstractClient implements ConnectionInterface, FilesInterface,
     public function delete(string $path_name): bool
     {
         $this->checkConnection();
-        $result = ftp_delete($this->link, $path_name);
+        $result = @ftp_delete($this->link, $path_name);
         $this->logCall(__FUNCTION__, ['parameters' => func_get_args(), 'result' => $result]);
         return $result;
     }
