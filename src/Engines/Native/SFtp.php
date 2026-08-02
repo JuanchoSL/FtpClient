@@ -250,6 +250,10 @@ class SFtp extends AbstractClient implements ConnectionInterface, FilesInterface
     public function write(string $remote_file, string $contents): bool
     {
         $this->checkConnection();
+        $filepath = tempnam(sys_get_temp_dir(), 'filesys');
+        file_put_contents($filepath, $contents);
+        return $this->upload($filepath, $remote_file);
+
         if (is_file($contents) && file_exists($contents)) {
             $contents = file_get_contents($contents);
         }
@@ -334,7 +338,10 @@ class SFtp extends AbstractClient implements ConnectionInterface, FilesInterface
         if (substr($dir, 0, 1) === '/') {
             $this->last_dir = $dir;
         } else {
-            $this->last_dir .= '/' . $dir;
+            if (substr($this->last_dir, -1) !== '/') {
+                $this->last_dir .= '/';
+            }
+            $this->last_dir .= $dir;
         }
         if (substr($this->last_dir, -3) == '/..') {
             $this->last_dir = substr($this->last_dir, 0, -3);
