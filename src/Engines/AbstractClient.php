@@ -161,7 +161,7 @@ abstract class AbstractClient implements ConnectionInterface, ClientInterface, L
     function __destruct()
     {
         if ($this->isConnected()) {
-            $this->disconnect();
+            //$this->disconnect();
         }
     }
 
