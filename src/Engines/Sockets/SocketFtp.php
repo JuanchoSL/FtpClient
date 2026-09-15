@@ -450,6 +450,9 @@ class SocketFtp extends AbstractClient implements ConnectionInterface, FilesInte
             if (str_starts_with($response, '200 ')) {
                 $response = $this->writeChannel("PROT P");
                 if (str_starts_with($response, '200 ')) {
+                    if (str_contains(strtolower($response), 'private')) {
+                        $this->elevated = true;
+                    }
                     $response = $this->writeChannel($command);
                 }
             }
